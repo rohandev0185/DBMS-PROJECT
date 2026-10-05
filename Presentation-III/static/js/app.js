@@ -18,12 +18,15 @@ function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'}</span><span>${message}</span>`;
+  const icon = type === 'success' ? '✔' : '✕';
+  toast.innerHTML = `<span style="font-size:1rem;font-weight:800;">${icon}</span><span>${message}</span>`;
   container.appendChild(toast);
   setTimeout(() => {
+    toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
     toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
-  }, 3500);
+    toast.style.transform = 'translateX(60px)';
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
 }
 
 // Check MySQL connection status & stats
@@ -35,13 +38,13 @@ async function checkStatus() {
     const data = await res.json();
     if (data.connection && data.connection.status === 'connected') {
       pill.className = 'db-pill connected';
-      text.textContent = `MySQL Connected (${data.connection.version})`;
+      text.textContent = `MySQL ${data.connection.version} · ${data.connection.host}`;
       if (data.stats) {
-        document.getElementById('stat-books').textContent = data.stats.total_books ?? 0;
-        document.getElementById('stat-copies').textContent = data.stats.total_copies ?? 0;
-        document.getElementById('stat-members').textContent = data.stats.total_members ?? 0;
-        document.getElementById('stat-loans').textContent = data.stats.active_loans ?? 0;
-        document.getElementById('stat-fines').textContent = `₹${data.stats.unpaid_fines ?? 0}`;
+        animateCounter('stat-books',   data.stats.total_books   ?? 0);
+        animateCounter('stat-copies',  data.stats.total_copies  ?? 0);
+        animateCounter('stat-members', data.stats.total_members ?? 0);
+        animateCounter('stat-loans',   data.stats.active_loans  ?? 0);
+        document.getElementById('stat-fines').textContent = `₹${(data.stats.unpaid_fines ?? 0).toFixed(0)}`;
       }
     } else {
       pill.className = 'db-pill error';
@@ -53,11 +56,29 @@ async function checkStatus() {
   }
 }
 
+// Animated number counter
+function animateCounter(elId, end) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  const duration = 600;
+  const step = (end - start) / (duration / 16);
+  let cur = start;
+  const timer = setInterval(() => {
+    cur += step;
+    if ((step > 0 && cur >= end) || (step < 0 && cur <= end)) {
+      clearInterval(timer);
+      el.textContent = end;
+    } else {
+      el.textContent = Math.round(cur);
+    }
+  }, 16);
+}
+
 // Tab navigation
 function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
   event.currentTarget.classList.add('active');
   const target = document.getElementById(tabId);
   if (target) target.classList.add('active');
@@ -97,27 +118,37 @@ async function loadBooks() {
 function renderBooks(books) {
   const tbody = document.getElementById('books-tbody');
   if (!books || books.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 2rem;">No books found in database.</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No books found in the database.</td></tr>';
     return;
   }
-  tbody.innerHTML = books.map(b => `
+  tbody.innerHTML = books.map(b => {
+    const pct = b.Total_Copies > 0 ? Math.round((b.Available_Copies / b.Total_Copies) * 100) : 0;
+    const barColor = pct === 0 ? '#3F3F46' : pct < 50 ? '#A1A1AA' : '#FAFAFA';
+    const issueBtn = b.Available_Copies > 0
+      ? `<button class="btn btn-primary btn-sm" onclick="openIssueBookForBook(${b.BookID})">Borrow Copy</button>`
+      : `<span style="color:var(--text-muted);font-size:0.76rem;">Unavailable</span>`;
+    return `
     <tr>
-      <td style="font-family: var(--font-mono); font-weight: 600;">${b.BookID}</td>
-      <td style="font-family: var(--font-mono); font-size: 0.78rem;">${b.ISBN}</td>
-      <td style="font-weight: 600;">${b.Title}</td>
+      <td>${b.BookID}</td>
+      <td style="font-family:var(--font-mono);font-size:0.76rem;color:var(--text-muted);">${b.ISBN}</td>
+      <td class="title-cell">${b.Title}</td>
       <td><span class="badge badge-category">${b.Category}</span></td>
-      <td>${b.Authors}</td>
-      <td style="color: var(--muted);">${b.Publisher}</td>
+      <td style="color:var(--text-secondary);">${b.Authors}</td>
+      <td style="color:var(--text-muted);font-size:0.8rem;">${b.Publisher}</td>
       <td>
-        <span class="badge ${b.Available_Copies > 0 ? 'badge-available' : 'badge-issued'}">
-          ${b.Available_Copies} / ${b.Total_Copies} available
-        </span>
+        <div class="copy-bar">
+          <div class="copy-bar-track"><div class="copy-bar-fill" style="width:${pct}%;background:${barColor};"></div></div>
+          <span class="copy-text">${b.Available_Copies}/${b.Total_Copies}</span>
+        </div>
       </td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="deleteBook(${b.BookID}, '${b.Title.replace(/'/g, "\\'")}')">🗑️ Delete</button>
+        <div style="display:flex;gap:0.4rem;align-items:center;">
+          ${issueBtn}
+          <button class="btn btn-danger btn-sm admin-only" onclick="deleteBook(${b.BookID}, '${b.Title.replace(/'/g, "\\'")}')">Delete</button>
+        </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 }
 
 function filterBooks() {
@@ -219,37 +250,34 @@ async function loadIssues() {
 function renderIssues(issues) {
   const tbody = document.getElementById('issues-tbody');
   if (!issues || issues.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding: 2rem;">No circulation records found.</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No circulation records found.</td></tr>';
     return;
   }
   tbody.innerHTML = issues.map(iss => {
-    let statusBadge = '<span class="badge badge-issued">Active</span>';
-    if (iss.Loan_Status === 'Returned') {
-      statusBadge = '<span class="badge badge-available">Returned</span>';
-    } else if (iss.Loan_Status === 'Overdue') {
-      statusBadge = '<span class="badge badge-overdue">Overdue</span>';
-    }
-
+    const statusMap = {
+      'Active':   '<span class="badge badge-issued">Active</span>',
+      'Returned': '<span class="badge badge-returned">Returned</span>',
+      'Overdue':  '<span class="badge badge-overdue">Overdue</span>',
+    };
+    const badge = statusMap[iss.Loan_Status] || `<span class="badge">${iss.Loan_Status}</span>`;
+    const fine = iss.Fine_Amount > 0
+      ? `<span style="font-family:var(--font-mono);font-weight:700;color:var(--text-primary);">Rs. ${iss.Fine_Amount}</span>`
+      : `<span style="color:var(--text-muted);">-</span>`;
+    const action = iss.Loan_Status !== 'Returned'
+      ? `<button class="btn btn-primary btn-sm admin-only" onclick="returnBook(${iss.IssueID})">Return Copy</button>`
+      : `<span style="color:var(--text-muted);font-size:0.76rem;">Closed</span>`;
     return `
       <tr>
-        <td style="font-family: var(--font-mono); font-weight: 600;">#${iss.IssueID}</td>
-        <td style="font-weight: 600;">${iss.Member_Name}</td>
-        <td>${iss.Book_Title}</td>
-        <td style="font-family: var(--font-mono); font-size: 0.78rem;">${iss.AccessionNo}</td>
-        <td style="font-family: var(--font-mono); font-size: 0.78rem;">${iss.IssueDate}</td>
-        <td style="font-family: var(--font-mono); font-size: 0.78rem;">${iss.DueDate}</td>
-        <td>${statusBadge}</td>
-        <td style="font-family: var(--font-mono); font-weight: 600; color: ${iss.Fine_Amount > 0 ? 'var(--negative)' : 'var(--muted)'};">
-          ${iss.Fine_Amount > 0 ? `₹${iss.Fine_Amount}` : '-'}
-        </td>
-        <td>
-          ${iss.Loan_Status !== 'Returned' ? 
-            `<button class="btn btn-secondary btn-sm" onclick="returnBook(${iss.IssueID})">📥 Return</button>` : 
-            `<span style="color: var(--muted); font-size: 0.78rem;">Closed</span>`
-          }
-        </td>
-      </tr>
-    `;
+        <td>#${iss.IssueID}</td>
+        <td style="font-weight:600;color:var(--text-primary);">${iss.Member_Name}</td>
+        <td class="title-cell">${iss.Book_Title}</td>
+        <td style="font-family:var(--font-mono);font-size:0.76rem;">${iss.AccessionNo}</td>
+        <td style="font-family:var(--font-mono);font-size:0.76rem;">${iss.IssueDate}</td>
+        <td style="font-family:var(--font-mono);font-size:0.76rem;">${iss.DueDate}</td>
+        <td>${badge}</td>
+        <td>${fine}</td>
+        <td>${action}</td>
+      </tr>`;
   }).join('');
 }
 
@@ -280,6 +308,30 @@ async function openIssueBookModal() {
     }
   } catch (err) {
     showToast('Failed to load issue metadata.', 'error');
+  }
+}
+
+async function openIssueBookForBook(bookId) {
+  try {
+    const res = await fetch('/api/meta');
+    const json = await res.json();
+    if (json.success) {
+      const memSelect = document.getElementById('iss-member');
+      const copySelect = document.getElementById('iss-copy');
+      memSelect.innerHTML = json.members.map(m => `<option value="${m.MemberID}">${m.Name} (${m.Email})</option>`).join('');
+      
+      const filteredCopies = json.available_copies.filter(c => c.BookID == bookId || c.Book_ID == bookId);
+      const targetCopies = filteredCopies.length > 0 ? filteredCopies : json.available_copies;
+
+      if (targetCopies.length === 0) {
+        copySelect.innerHTML = '<option disabled>No physical copies currently available on shelf</option>';
+      } else {
+        copySelect.innerHTML = targetCopies.map(c => `<option value="${c.CopyID}">${c.Title} [${c.AccessionNo}]</option>`).join('');
+      }
+      openModal('issue-book-modal');
+    }
+  } catch (err) {
+    showToast('Failed to load copy metadata.', 'error');
   }
 }
 
@@ -350,24 +402,29 @@ async function loadMembers() {
 function renderMembers(members) {
   const tbody = document.getElementById('members-tbody');
   if (!members || members.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No members found.</td></tr>';
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No members found.</td></tr>';
     return;
   }
-  tbody.innerHTML = members.map(m => `
+  tbody.innerHTML = members.map(m => {
+    const typeBadge = m.MemberType === 'Faculty'
+      ? `<span class="badge badge-faculty">Faculty</span>`
+      : m.MemberType === 'Staff'
+        ? `<span class="badge badge-issued">Staff</span>`
+        : `<span class="badge badge-student">Student</span>`;
+    const fineHtml = m.Total_Fines > 0
+      ? `<span class="fine-amount has-fine">Rs. ${m.Total_Fines}</span>`
+      : `<span class="fine-amount no-fine">Rs. 0</span>`;
+    return `
     <tr>
-      <td style="font-family: var(--font-mono); font-weight: 600;">${m.MemberID}</td>
-      <td style="font-weight: 600;">${m.Name}</td>
-      <td>${m.Email}</td>
-      <td><span class="badge badge-category">${m.MemberType}</span></td>
-      <td>${m.Total_Issued} books</td>
-      <td style="font-family: var(--font-mono); font-weight: 600; color: ${m.Total_Fines > 0 ? 'var(--negative)' : 'var(--positive)'};">
-        ₹${m.Total_Fines}
-      </td>
-      <td>
-        <button class="btn btn-danger btn-sm" onclick="deleteMember(${m.MemberID}, '${m.Name.replace(/'/g, "\\'")}')">🗑️ Delete</button>
-      </td>
-    </tr>
-  `).join('');
+      <td>${m.MemberID}</td>
+      <td style="font-weight:600;color:var(--text-primary);">${m.Name}</td>
+      <td style="color:var(--text-muted);font-size:0.82rem;">${m.Email}</td>
+      <td>${typeBadge}</td>
+      <td style="font-family:var(--font-mono);">${m.Total_Issued}</td>
+      <td>${fineHtml}</td>
+      <td class="admin-only"><button class="btn btn-danger btn-sm" onclick="deleteMember(${m.MemberID}, '${m.Name.replace(/'/g, "\\'")}')">Delete</button></td>
+    </tr>`;
+  }).join('');
 }
 
 function filterMembers() {
@@ -468,43 +525,59 @@ async function loadDigital() {
 // ============================================================================
 
 async function loadQuery(queryId) {
-  const thead = document.getElementById('q-thead');
-  const tbody = document.getElementById('q-tbody');
-  const title = document.getElementById('q-title');
-  const desc = document.getElementById('q-desc');
-  const meta = document.getElementById('q-meta');
-  const code = document.getElementById('q-code');
+  const thead    = document.getElementById('q-thead');
+  const tbody    = document.getElementById('q-tbody');
+  const title    = document.getElementById('q-title');
+  const desc     = document.getElementById('q-desc');
+  const metaEl   = document.getElementById('q-meta');
+  const metaTxt  = document.getElementById('q-meta-text');
+  const code     = document.getElementById('q-code');
 
-  title.textContent = `Loading Query ${queryId}...`;
-  tbody.innerHTML = '<tr><td style="text-align:center; padding: 2rem;">Executing SQL against MySQL 9.7...</td></tr>';
+  // Highlight active query button
+  document.querySelectorAll('.btn-query').forEach(b => b.classList.remove('active-query'));
+  const btn = document.getElementById('qbtn-' + queryId);
+  if (btn) btn.classList.add('active-query');
+
+  title.textContent = `⏳ Executing Query ${queryId}…`;
+  tbody.innerHTML = '<tr class="empty-row"><td>Running SQL against MySQL 9.7…</td></tr>';
+  if (metaEl) metaEl.style.display = 'none';
 
   try {
-    const res = await fetch(`/api/query/${queryId}`);
+    const res  = await fetch(`/api/query/${queryId}`);
     const json = await res.json();
     if (json.success) {
       title.textContent = json.title;
-      desc.textContent = json.description;
-      meta.textContent = `${json.row_count} rows in set (${json.execution_time_sec} sec)`;
-      code.textContent = json.sql;
+      desc.textContent  = json.description;
+      if (metaEl && metaTxt) {
+        metaTxt.textContent = `${json.row_count} rows · ${json.execution_time_sec}s`;
+        metaEl.style.display = 'flex';
+      }
+      // SQL syntax highlight (simple keywords)
+      const highlighted = json.sql
+        .replace(/\b(SELECT|FROM|JOIN|LEFT|INNER|WHERE|GROUP BY|ORDER BY|HAVING|COUNT|SUM|CONCAT|IFNULL|AS|ON|AND|OR|NOT|IS|NULL|BY|DESC|ASC|LIMIT|DISTINCT|UPDATE|INSERT|DELETE)\b/g, '<span class="kw">$1</span>')
+        .replace(/\b(CURDATE|NOW|DATE|DATEDIFF)\b/g, '<span class="fn">$1</span>');
+      code.innerHTML = highlighted;
 
-      // Render columns
       thead.innerHTML = `<tr>${json.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+      tbody.innerHTML = json.data.length === 0
+        ? '<tr class="empty-row"><td colspan="99">Query returned 0 rows.</td></tr>'
+        : json.data.map(row => `
+          <tr>${json.columns.map(c => {
+            const val = row[c] ?? 'NULL';
+            return `<td style="font-family:var(--font-mono);font-size:0.79rem;">${val}</td>`;
+          }).join('')}</tr>
+        `).join('');
 
-      // Render rows
-      tbody.innerHTML = json.data.map(row => `
-        <tr>
-          ${json.columns.map(c => `<td style="font-family: var(--font-mono); font-size: 0.8rem;">${row[c]}</td>`).join('')}
-        </tr>
-      `).join('');
+      document.getElementById('query-display-card').classList.add('has-results');
     } else {
-      title.textContent = `Query ${queryId} Execution Error`;
-      desc.textContent = json.error;
-      code.textContent = json.sql || '--';
-      tbody.innerHTML = `<tr><td style="text-align:center; color: var(--negative); padding: 2rem;">${json.error}</td></tr>`;
+      title.textContent = `⚠ Query ${queryId} Error`;
+      desc.textContent  = json.error;
+      code.textContent  = json.sql || '--';
+      tbody.innerHTML   = `<tr class="empty-row"><td style="color:var(--rose);">${json.error}</td></tr>`;
     }
   } catch (err) {
-    title.textContent = `Query ${queryId} Failed`;
-    tbody.innerHTML = `<tr><td style="text-align:center; color: var(--negative); padding: 2rem;">Failed to execute query.</td></tr>`;
+    title.textContent = `⚠ Query ${queryId} Failed`;
+    tbody.innerHTML   = `<tr class="empty-row"><td style="color:var(--rose);">Failed to execute. Is Flask running?</td></tr>`;
   }
 }
 

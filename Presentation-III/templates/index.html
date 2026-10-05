@@ -3,122 +3,283 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Library Circulation & Digital Resource Database - Live DBMS Portal</title>
+  <title>Library Circulation & Digital Resource Database System</title>
+  <meta name="description" content="Live Library Circulation & Digital Resource Management System – DBMS Course Project by Rohan Shikhar, Woxsen University.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-  <div class="bg-grid"></div>
 
-  <!-- Header -->
-  <header class="app-header">
-    <div class="brand-section">
-      <div class="brand-icon">📚</div>
-      <div class="brand-text">
-        <h1>Library Circulation & Digital Resource Database</h1>
-        <div class="meta-subtitle">Rohan Shikhar · 25WU0101112 · AIML Whales · Woxsen University</div>
+  <!-- ============================================================
+       1. ROLE-BASED LOGIN SCREEN OVERLAY (With Visual Architecture Graphic)
+       ============================================================ -->
+  <div id="login-screen" class="login-overlay active">
+    <div class="login-modal">
+      <div class="login-hero-visual">
+        <img src="/static/images/login_hero.jpg" alt="Library Database Architecture" class="login-hero-img">
+        <div class="visual-overlay-content">
+          <div class="visual-title">Library Circulation Database</div>
+          <div class="visual-subtitle">Relational 3NF Schema &amp; Real-Time MySQL Engine</div>
+          <div class="visual-badges">
+            <span class="v-pill">DBMS Course Project</span>
+            <span class="v-pill">Woxsen University</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-form-container">
+        <div class="login-header">
+          <h2>Select Account Role</h2>
+          <p>Sign in to access your designated workspace interface.</p>
+        </div>
+
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="role-selector-grid">
+            <label class="role-card active" onclick="selectRole('admin', this)">
+              <input type="radio" name="user-role" value="admin" checked style="display:none;">
+              <div class="role-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="role-info">
+                <div class="role-name">Librarian / Admin</div>
+                <div class="role-desc">Full access: catalog control, issues, returns &amp; SQL execution</div>
+              </div>
+            </label>
+
+            <label class="role-card" onclick="selectRole('student', this)">
+              <input type="radio" name="user-role" value="student" style="display:none;">
+              <div class="role-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div class="role-info">
+                <div class="role-name">Student / Member</div>
+                <div class="role-desc">Catalog search, book borrowing &amp; digital resources</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.25rem;">
+            <label>Name or Identity ID</label>
+            <input type="text" id="login-name" class="form-control" placeholder="e.g. Rohan Shikhar (25WU0101112)" value="Rohan Shikhar">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">
+            Sign In to Portal
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </form>
       </div>
     </div>
+  </div>
+
+  <!-- ============================================================
+       2. MAIN APP HEADER
+       ============================================================ -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-badge">DBMS</div>
+      <div class="brand-text">
+        <h1>Library Circulation &amp; Digital Resources</h1>
+        <div class="meta-subtitle">Rohan Shikhar &bull; 25WU0101112 &bull; AIML Whales &bull; Woxsen University</div>
+      </div>
+    </div>
+
     <div class="header-status">
+      <div id="user-role-tag" class="role-user-pill">
+        <span id="role-text-display">Admin Workspace</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showLoginScreen()">Switch Role</button>
       <div id="db-status-pill" class="db-pill">
         <span class="pulse-dot"></span>
-        <span id="db-status-text">Checking MySQL...</span>
+        <span id="db-status-text">Connecting...</span>
       </div>
-      <button class="btn btn-secondary btn-sm" onclick="openModal('db-config-modal')">⚙️ MySQL Config</button>
-      <button class="btn btn-secondary btn-sm" onclick="initDatabase()">🔄 Seed Database</button>
+      <button class="btn btn-secondary btn-sm admin-only" onclick="openModal('db-config-modal')">Connection</button>
+      <button class="btn btn-secondary btn-sm admin-only" onclick="initDatabase()">Seed MySQL</button>
     </div>
   </header>
 
-  <!-- Main Container -->
+  <!-- ============================================================
+       3. MAIN SYSTEM CONTAINER
+       ============================================================ -->
   <main class="app-container">
-    <!-- Quick Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon" style="background: #EEF2FF; color: #4F46E5;">📖</div>
-        <div>
-          <div class="stat-val" id="stat-books">-</div>
-          <div class="stat-lbl">Unique Book Titles</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background: #F0F9FF; color: #0284C7;">🏷️</div>
-        <div>
-          <div class="stat-val" id="stat-copies">-</div>
-          <div class="stat-lbl">Physical Shelf Copies</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background: #FAF5FF; color: #9333EA;">👥</div>
-        <div>
-          <div class="stat-val" id="stat-members">-</div>
-          <div class="stat-lbl">Registered Members</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background: #FFFBEB; color: #D97706;">🔄</div>
-        <div>
-          <div class="stat-val" id="stat-loans">-</div>
-          <div class="stat-lbl">Active Loans</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background: #FEF2F2; color: #DC2626;">₹</div>
-        <div>
-          <div class="stat-val" id="stat-fines">₹0</div>
-          <div class="stat-lbl">Unpaid Overdue Fines</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="tabs-nav">
-      <button class="tab-btn active" onclick="switchTab('books-tab')">📚 Books Catalog</button>
-      <button class="tab-btn" onclick="switchTab('issues-tab')">🔄 Circulation & Issues</button>
-      <button class="tab-btn" onclick="switchTab('members-tab')">👥 Members</button>
-      <button class="tab-btn" onclick="switchTab('digital-tab')">💻 Digital Resources</button>
-      <button class="tab-btn" onclick="switchTab('queries-tab')">⚡ The 5 Evaluated Queries</button>
+    <!-- ── SYSTEM METRICS BENTO GRID (With Visual Background Graphic) ── -->
+    <section class="bento-grid" aria-label="Database Overview Metrics">
+      <!-- Bento Card 1: Hero Stat with 3D Architectural Visual (Spans 2 columns) -->
+      <div class="bento-card bento-hero bento-hero-visual">
+        <img src="/static/images/bento_hero.jpg" alt="Circulation Hub Visual" class="bento-bg-img">
+        <div class="bento-hero-inner">
+          <div class="bento-header">
+            <span class="bento-tag">CATALOG MASTER</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="bento-content">
+            <div class="bento-val" id="stat-books">--</div>
+            <div class="bento-lbl">Unique Titles Cataloged</div>
+            <div class="bento-desc">Master catalog entity schema mapping BOOK to COPY tables in 3NF</div>
+          </div>
+          <div class="bento-footer">
+            <span class="bento-pill">MySQL 9.7 Engine</span>
+            <span class="bento-pill">Normalised (3NF)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento Card 2: Shelf Copies -->
+      <div class="bento-card">
+        <div class="bento-header">
+          <span class="bento-tag">INVENTORY</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div class="bento-val" id="stat-copies">--</div>
+        <div class="bento-lbl">Physical Shelf Copies</div>
+        <div class="bento-sub">Individual accession volumes</div>
+      </div>
+
+      <!-- Bento Card 3: Active Members -->
+      <div class="bento-card">
+        <div class="bento-header">
+          <span class="bento-tag">REGISTRY</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="bento-val" id="stat-members">--</div>
+        <div class="bento-lbl">Registered Members</div>
+        <div class="bento-sub">Students, Faculty &amp; Staff</div>
+      </div>
+
+      <!-- Bento Card 4: Active Loans -->
+      <div class="bento-card">
+        <div class="bento-header">
+          <span class="bento-tag">CIRCULATION</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </div>
+        <div class="bento-val" id="stat-loans">--</div>
+        <div class="bento-lbl">Active Borrowed Loans</div>
+        <div class="bento-sub">Currently issued items</div>
+      </div>
+
+      <!-- Bento Card 5: Financials -->
+      <div class="bento-card bento-accent-card">
+        <div class="bento-header">
+          <span class="bento-tag">FINANCIALS</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="bento-val" id="stat-fines">Rs. 0</div>
+        <div class="bento-lbl">Outstanding Late Fees</div>
+        <div class="bento-sub">Unpaid fine summary</div>
+      </div>
+    </section>
+
+    <!-- ── CATEGORIZED QUICK ACTION VISUAL CARDS ── -->
+    <section class="quick-actions-section">
+      <div class="section-title-sm">Quick Operations Desk</div>
+      <div class="action-cards-grid">
+        <div class="action-card admin-only" onclick="openAddBookModal()">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <div class="action-details">
+            <div class="action-title">Add New Title</div>
+            <div class="action-desc">Catalog a new book and create physical shelf copies</div>
+          </div>
+        </div>
+
+        <div class="action-card admin-only" onclick="openModal('add-member-modal')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+          </div>
+          <div class="action-details">
+            <div class="action-title">Register Member</div>
+            <div class="action-desc">Add a student, faculty or staff member to registry</div>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="openIssueBookModal()">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </div>
+          <div class="action-details">
+            <div class="action-title">Issue / Borrow Copy</div>
+            <div class="action-desc">Checkout an available shelf copy to a registered member</div>
+          </div>
+        </div>
+
+        <div class="action-card" onclick="switchTab('queries-tab')">
+          <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="action-details">
+            <div class="action-title">5 SQL Reports</div>
+            <div class="action-desc">Execute live queries for circulation, overdue books &amp; fines</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── NAVIGATION SEGMENT TABS ── -->
+    <nav class="bento-tabs-nav" role="tablist">
+      <button class="tab-btn active" onclick="switchTab('books-tab')" role="tab">Books Catalog</button>
+      <button class="tab-btn" onclick="switchTab('issues-tab')" role="tab">Circulation Desk</button>
+      <button class="tab-btn" onclick="switchTab('members-tab')" role="tab">Members Registry</button>
+      <button class="tab-btn" onclick="switchTab('digital-tab')" role="tab">Digital Resources</button>
+      <button class="tab-btn" onclick="switchTab('queries-tab')" role="tab">5 Evaluated SQL Queries</button>
     </nav>
 
-    <!-- Tab 1: Books Catalog -->
-    <section id="books-tab" class="tab-content active">
+    <!-- ═══════════════ TAB 1: BOOKS CATALOG ═══════════════ -->
+    <section id="books-tab" class="tab-content active" role="tabpanel">
       <div class="section-toolbar">
-        <input type="text" id="book-search" class="search-input" placeholder="🔍 Search book by title, author, category..." oninput="filterBooks()">
-        <button class="btn btn-primary" onclick="openAddBookModal()">+ Add New Book</button>
+        <div>
+          <h2 class="section-title">Physical Books Catalog</h2>
+          <p class="section-subtitle">Normalized BOOK and COPY tables in MySQL (Author listed once per title)</p>
+        </div>
+        <div class="toolbar-actions">
+          <input type="text" id="book-search" class="search-input" placeholder="Search title, ISBN, author, category..." oninput="filterBooks()">
+          <button class="btn btn-primary admin-only" onclick="openAddBookModal()">+ Add Book</button>
+        </div>
       </div>
-      <div class="table-card">
+      <div class="bento-table-card">
         <table class="data-table" id="books-table">
           <thead>
             <tr>
               <th>ID</th>
               <th>ISBN</th>
-              <th>Title</th>
+              <th>Book Title</th>
               <th>Category</th>
               <th>Author</th>
               <th>Publisher</th>
-              <th>Available / Total Copies</th>
-              <th>Actions</th>
+              <th>Shelf Copies</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="books-tbody">
-            <tr><td colspan="8" style="text-align:center; padding: 2rem;">Loading books from MySQL...</td></tr>
+            <tr class="empty-row"><td colspan="8">Querying MySQL database...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Tab 2: Circulation & Issues -->
-    <section id="issues-tab" class="tab-content">
+    <!-- ═══════════════ TAB 2: CIRCULATION DESK ═══════════════ -->
+    <section id="issues-tab" class="tab-content" role="tabpanel">
       <div class="section-toolbar">
-        <input type="text" id="issue-search" class="search-input" placeholder="🔍 Search issue by member or book..." oninput="filterIssues()">
-        <button class="btn btn-primary" onclick="openIssueBookModal()">+ Issue Book to Member</button>
+        <div>
+          <h2 class="section-title">Circulation &amp; Issues Desk</h2>
+          <p class="section-subtitle">Real-time issue, return, and fine tracking workflow</p>
+        </div>
+        <div class="toolbar-actions">
+          <input type="text" id="issue-search" class="search-input" placeholder="Search member, book title, accession..." oninput="filterIssues()">
+          <button class="btn btn-primary" onclick="openIssueBookModal()">+ Issue Book</button>
+        </div>
       </div>
-      <div class="table-card">
+      <div class="bento-table-card">
         <table class="data-table" id="issues-table">
           <thead>
             <tr>
-              <th>Issue ID</th>
+              <th>#</th>
               <th>Member Name</th>
               <th>Book Title</th>
-              <th>Copy Accession</th>
+              <th>Accession</th>
               <th>Issue Date</th>
               <th>Due Date</th>
               <th>Status</th>
@@ -127,127 +288,154 @@
             </tr>
           </thead>
           <tbody id="issues-tbody">
-            <tr><td colspan="9" style="text-align:center; padding: 2rem;">Loading circulation records...</td></tr>
+            <tr class="empty-row"><td colspan="9">Loading circulation records...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Tab 3: Members -->
-    <section id="members-tab" class="tab-content">
+    <!-- ═══════════════ TAB 3: MEMBERS REGISTRY ═══════════════ -->
+    <section id="members-tab" class="tab-content" role="tabpanel">
       <div class="section-toolbar">
-        <input type="text" id="member-search" class="search-input" placeholder="🔍 Search member by name or email..." oninput="filterMembers()">
-        <button class="btn btn-primary" onclick="openModal('add-member-modal')">+ Register Member</button>
+        <div>
+          <h2 class="section-title">Members Registry</h2>
+          <p class="section-subtitle">Registered student, faculty, and staff records from MEMBER table</p>
+        </div>
+        <div class="toolbar-actions">
+          <input type="text" id="member-search" class="search-input" placeholder="Search name or email..." oninput="filterMembers()">
+          <button class="btn btn-primary admin-only" onclick="openModal('add-member-modal')">+ Register Member</button>
+        </div>
       </div>
-      <div class="table-card">
+      <div class="bento-table-card">
         <table class="data-table" id="members-table">
           <thead>
             <tr>
-              <th>Member ID</th>
-              <th>Name</th>
-              <th>Email</th>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email Address</th>
               <th>Member Type</th>
-              <th>Total Issued</th>
-              <th>Total Fines</th>
-              <th>Action</th>
+              <th>Active Loans</th>
+              <th>Fines Due</th>
+              <th class="admin-only">Action</th>
             </tr>
           </thead>
           <tbody id="members-tbody">
-            <tr><td colspan="7" style="text-align:center; padding: 2rem;">Loading members...</td></tr>
+            <tr class="empty-row"><td colspan="7">Loading registered members...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Tab 4: Digital Resources -->
-    <section id="digital-tab" class="tab-content">
-      <div class="section-toolbar">
-        <h2 style="font-family: var(--font-display); font-size: 1.1rem;">E-Books & Academic Journals</h2>
-      </div>
-      <div class="table-card" style="margin-bottom: 2rem;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Resource ID</th>
-              <th>Title</th>
-              <th>Format</th>
-              <th>Access Link</th>
-            </tr>
-          </thead>
-          <tbody id="digital-tbody">
-            <tr><td colspan="4" style="text-align:center; padding: 2rem;">Loading digital catalog...</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="section-toolbar">
-        <h2 style="font-family: var(--font-display); font-size: 1.1rem;">Recent Digital Access Log (Audit Trail)</h2>
-      </div>
-      <div class="table-card">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Log ID</th>
-              <th>Member</th>
-              <th>Resource Title</th>
-              <th>Format</th>
-              <th>Access Timestamp</th>
-            </tr>
-          </thead>
-          <tbody id="access-logs-tbody">
-            <tr><td colspan="5" style="text-align:center; padding: 2rem;">Loading access logs...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Tab 5: The 5 Evaluated Queries -->
-    <section id="queries-tab" class="tab-content">
-      <div class="section-toolbar">
-        <div>
-          <h2 style="font-family: var(--font-display); font-size: 1.25rem;">The 5 Evaluated SQL Queries</h2>
-          <p style="font-size: 0.85rem; color: var(--muted);">Direct execution against the MySQL schema matching your portal presentation slides</p>
-        </div>
-      </div>
-
-      <!-- Query Selector Buttons -->
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-        <button class="btn btn-secondary" onclick="loadQuery(1)">Query 1: Available Books</button>
-        <button class="btn btn-secondary" onclick="loadQuery(2)">Query 2: Circulation</button>
-        <button class="btn btn-secondary" onclick="loadQuery(3)">Query 3: Overdue Books</button>
-        <button class="btn btn-secondary" onclick="loadQuery(4)">Query 4: Times Issued</button>
-        <button class="btn btn-secondary" onclick="loadQuery(5)">Query 5: Member Fines</button>
-      </div>
-
-      <div id="query-display-card" class="query-card">
-        <div class="query-header">
-          <div>
-            <div id="q-title" class="query-title">Select a query above</div>
-            <div id="q-desc" class="query-desc">Click any query button to execute live against MySQL.</div>
+    <!-- ═══════════════ TAB 4: DIGITAL RESOURCES ═══════════════ -->
+    <section id="digital-tab" class="tab-content" role="tabpanel">
+      <div class="bento-section-grid">
+        <div class="bento-table-card">
+          <div class="card-header-bar">
+            <div>
+              <h3 class="card-header-title">Digital Resources Catalog</h3>
+              <p class="card-header-sub">E-Books, Periodicals &amp; Academic Journals from DIGITAL_RESOURCE</p>
+            </div>
           </div>
-          <div id="q-meta" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent2);"></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Resource ID</th>
+                <th>Resource Title</th>
+                <th>Format</th>
+                <th>Access URL</th>
+              </tr>
+            </thead>
+            <tbody id="digital-tbody">
+              <tr class="empty-row"><td colspan="4">Loading digital catalog...</td></tr>
+            </tbody>
+          </table>
         </div>
-        <pre class="code-box"><code id="q-code">-- Click a query button above to view and execute SQL</code></pre>
-        <div class="table-card" style="margin-top: 1rem;">
-          <table class="data-table" id="q-result-table">
-            <thead id="q-thead"></thead>
-            <tbody id="q-tbody">
-              <tr><td style="text-align:center; padding: 2rem;">Results will appear here.</td></tr>
+
+        <div class="bento-table-card">
+          <div class="card-header-bar">
+            <div>
+              <h3 class="card-header-title">Digital Access Audit Logs</h3>
+              <p class="card-header-sub">Member digital access history from DIGITAL_ACCESS_LOG</p>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Member</th>
+                <th>Resource Title</th>
+                <th>Format</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="access-logs-tbody">
+              <tr class="empty-row"><td colspan="5">Loading access logs...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
+
+    <!-- ═══════════════ TAB 5: 5 EVALUATED SQL QUERIES ═══════════════ -->
+    <section id="queries-tab" class="tab-content" role="tabpanel">
+      <div class="section-toolbar">
+        <div>
+          <h2 class="section-title">The 5 Evaluated SQL Queries</h2>
+          <p class="section-subtitle">Live execution against MySQL database matching portal presentation requirements</p>
+        </div>
+      </div>
+
+      <div class="query-selector-bar">
+        <button class="btn btn-query" id="qbtn-1" onclick="loadQuery(1)">Q1 &bull; Available Books</button>
+        <button class="btn btn-query" id="qbtn-2" onclick="loadQuery(2)">Q2 &bull; Circulation</button>
+        <button class="btn btn-query" id="qbtn-3" onclick="loadQuery(3)">Q3 &bull; Overdue Books</button>
+        <button class="btn btn-query" id="qbtn-4" onclick="loadQuery(4)">Q4 &bull; Demand Ranking</button>
+        <button class="btn btn-query" id="qbtn-5" onclick="loadQuery(5)">Q5 &bull; Member Fines</button>
+      </div>
+
+      <div id="query-display-card" class="bento-query-card">
+        <div class="query-header-row">
+          <div>
+            <h3 id="q-title" class="query-title">Select a query above to execute</h3>
+            <p id="q-desc" class="query-desc">Click any query button to execute live SQL against MySQL and display real-time results.</p>
+          </div>
+          <div id="q-meta" class="query-meta-chip" style="display:none;">
+            <span>Execution:</span>
+            <span id="q-meta-text"></span>
+          </div>
+        </div>
+
+        <div class="code-container">
+          <div class="code-container-header">
+            <span class="code-lang-tag">SQL QUERY</span>
+            <button class="btn-copy-code" onclick="copyQueryCode()">Copy SQL</button>
+          </div>
+          <pre class="code-box"><code id="q-code">-- Click a query button above to view and execute live SQL</code></pre>
+        </div>
+
+        <div class="bento-table-card" style="margin-top: 1.25rem;">
+          <table class="data-table" id="q-result-table">
+            <thead id="q-thead"></thead>
+            <tbody id="q-tbody">
+              <tr class="empty-row"><td>Results will appear here upon query execution.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <!-- MODALS -->
+  <!-- ============================================================
+       4. MODALS & DIALOGS
+       ============================================================ -->
 
   <!-- Modal: Add Book -->
   <div id="add-book-modal" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>Add New Book to Catalog</h3>
-        <button class="modal-close" onclick="closeModal('add-book-modal')">✕</button>
+        <h3>Add New Book Title</h3>
+        <button class="modal-close" onclick="closeModal('add-book-modal')">X</button>
       </div>
       <form id="add-book-form" onsubmit="submitAddBook(event)">
         <div class="modal-body">
@@ -260,10 +448,10 @@
             <input type="text" id="b-isbn" class="form-control" required placeholder="e.g. 978-0131103628">
           </div>
           <div class="form-group">
-            <label>Author *</label>
+            <label>Author Name *</label>
             <input type="text" id="b-author" class="form-control" required placeholder="e.g. C. J. Date">
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
             <div class="form-group">
               <label>Category *</label>
               <select id="b-category" class="form-control" required></select>
@@ -290,8 +478,8 @@
   <div id="add-member-modal" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>Register New Library Member</h3>
-        <button class="modal-close" onclick="closeModal('add-member-modal')">✕</button>
+        <h3>Register Member</h3>
+        <button class="modal-close" onclick="closeModal('add-member-modal')">X</button>
       </div>
       <form id="add-member-form" onsubmit="submitAddMember(event)">
         <div class="modal-body">
@@ -301,7 +489,7 @@
           </div>
           <div class="form-group">
             <label>Email Address *</label>
-            <input type="email" id="m-email" class="form-control" required placeholder="e.g. varun.sharma@woxsen.edu.in">
+            <input type="email" id="m-email" class="form-control" required placeholder="e.g. varun@woxsen.edu.in">
           </div>
           <div class="form-group">
             <label>Member Type *</label>
@@ -314,7 +502,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('add-member-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Member</button>
+          <button type="submit" class="btn btn-primary">Save Record</button>
         </div>
       </form>
     </div>
@@ -324,8 +512,8 @@
   <div id="issue-book-modal" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>Issue Book Copy to Member</h3>
-        <button class="modal-close" onclick="closeModal('issue-book-modal')">✕</button>
+        <h3>Issue / Borrow Book Copy</h3>
+        <button class="modal-close" onclick="closeModal('issue-book-modal')">X</button>
       </div>
       <form id="issue-book-form" onsubmit="submitIssueBook(event)">
         <div class="modal-body">
@@ -354,26 +542,28 @@
   <div id="db-config-modal" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>MySQL Connection Settings</h3>
-        <button class="modal-close" onclick="closeModal('db-config-modal')">✕</button>
+        <h3>Connection Settings</h3>
+        <button class="modal-close" onclick="closeModal('db-config-modal')">X</button>
       </div>
       <form id="db-config-form" onsubmit="submitDbConfig(event)">
         <div class="modal-body">
-          <div class="form-group">
-            <label>Host</label>
-            <input type="text" id="cfg-host" class="form-control" value="localhost">
-          </div>
-          <div class="form-group">
-            <label>Port</label>
-            <input type="number" id="cfg-port" class="form-control" value="3306">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group">
+              <label>Host</label>
+              <input type="text" id="cfg-host" class="form-control" value="localhost">
+            </div>
+            <div class="form-group">
+              <label>Port</label>
+              <input type="number" id="cfg-port" class="form-control" value="3306">
+            </div>
           </div>
           <div class="form-group">
             <label>User</label>
             <input type="text" id="cfg-user" class="form-control" value="root">
           </div>
           <div class="form-group">
-            <label>Root Password</label>
-            <input type="password" id="cfg-pass" class="form-control" placeholder="Enter MySQL root password">
+            <label>Password</label>
+            <input type="password" id="cfg-pass" class="form-control" placeholder="MySQL root password">
           </div>
           <div class="form-group">
             <label>Database</label>
@@ -382,7 +572,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('db-config-modal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Connect & Save</button>
+          <button type="submit" class="btn btn-primary">Save &amp; Connect</button>
         </div>
       </form>
     </div>
@@ -392,5 +582,42 @@
   <div id="toast-container" class="toast-container"></div>
 
   <script src="/static/js/app.js"></script>
+  <script>
+    let currentRole = 'admin';
+
+    function selectRole(role, el) {
+      currentRole = role;
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const userName = document.getElementById('login-name').value || 'User';
+      const roleText = currentRole === 'admin' ? 'Administrator Workspace' : 'Student / Member View';
+      
+      document.getElementById('role-text-display').textContent = `${roleText} (${userName})`;
+      document.getElementById('login-screen').classList.remove('active');
+
+      if (currentRole !== 'admin') {
+        document.body.classList.add('role-student');
+      } else {
+        document.body.classList.remove('role-student');
+      }
+
+      if (typeof showToast === 'function') showToast(`Signed in as ${userName} (${currentRole.toUpperCase()})`);
+    }
+
+    function showLoginScreen() {
+      document.getElementById('login-screen').classList.add('active');
+    }
+
+    function copyQueryCode() {
+      const code = document.getElementById('q-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        if (typeof showToast === 'function') showToast('SQL copied to clipboard');
+      });
+    }
+  </script>
 </body>
 </html>

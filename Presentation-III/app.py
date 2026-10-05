@@ -78,9 +78,9 @@ def api_get_books():
             b.Title,
             c.CategoryName AS Category,
             p.PublisherName AS Publisher,
-            IFNULL(GROUP_CONCAT(a.Name SEPARATOR ', '), 'Unknown') AS Authors,
-            COUNT(cp.CopyID) AS Total_Copies,
-            COUNT(CASE WHEN cp.Status = 'Available' THEN 1 END) AS Available_Copies
+            IFNULL(GROUP_CONCAT(DISTINCT a.Name SEPARATOR ', '), 'Unknown') AS Authors,
+            COUNT(DISTINCT cp.CopyID) AS Total_Copies,
+            COUNT(DISTINCT CASE WHEN cp.Status = 'Available' THEN cp.CopyID END) AS Available_Copies
         FROM BOOK b
         JOIN CATEGORY c ON b.CategoryID = c.CategoryID
         JOIN PUBLISHER p ON b.PublisherID = p.PublisherID
@@ -91,6 +91,10 @@ def api_get_books():
         ORDER BY b.BookID ASC;
         """
         books = query_db(sql)
+        for b in books:
+            if b.get('Authors'):
+                unique_authors = list(dict.fromkeys([a.strip() for a in b['Authors'].split(',') if a.strip()]))
+                b['Authors'] = ', '.join(unique_authors)
         return jsonify({"success": True, "data": books})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500

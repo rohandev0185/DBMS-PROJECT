@@ -400,15 +400,15 @@ CREATE OR REPLACE VIEW Books AS
 SELECT 
     b.BookID AS Book_ID,
     b.Title,
-    a.Name AS Author,
+    IFNULL(GROUP_CONCAT(DISTINCT a.Name SEPARATOR ', '), 'Unknown') AS Author,
     c.CategoryName AS Category,
-    COUNT(CASE WHEN cp.Status = 'Available' THEN 1 END) AS Available_Copies
+    COUNT(DISTINCT CASE WHEN cp.Status = 'Available' THEN cp.CopyID END) AS Available_Copies
 FROM BOOK b
 JOIN CATEGORY c ON b.CategoryID = c.CategoryID
 LEFT JOIN BOOK_AUTHOR ba ON b.BookID = ba.BookID
 LEFT JOIN AUTHOR a ON ba.AuthorID = a.AuthorID
 LEFT JOIN COPY cp ON b.BookID = cp.BookID
-GROUP BY b.BookID, b.Title, a.Name, c.CategoryName;
+GROUP BY b.BookID, b.Title, c.CategoryName;
 
 -- View: Members
 CREATE OR REPLACE VIEW Members AS

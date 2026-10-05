@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#0F172A; font-family:'Inter', system-ui, sans-serif;">
+  <defs>
+    <style>
+      .title-text { font-family: 'Space Grotesk', sans-serif; font-weight: 700; fill: #FFFFFF; font-size: 28px; }
+      .subtitle-text { font-family: 'Inter', sans-serif; fill: #94A3B8; font-size: 14px; }
+      .entity-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 16px; }
+      .attr-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; fill: #E2E8F0; }
+      .attr-pk { font-weight: 700; fill: #38BDF8; text-decoration: underline; }
+      .attr-fk { fill: #C084FC; }
+      .cardinality { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12px; fill: #FBBF24; }
+      .rel-diamond { fill: #1E293B; stroke: #818CF8; stroke-width: 2; }
+      .rel-text { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; fill: #E0E7FF; text-anchor: middle; dominant-baseline: middle; }
+    </style>
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748B" />
+    </marker>
+  </defs>
+
+  <!-- Grid Pattern -->
+  <g opacity="0.15">
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#94A3B8" stroke-width="1" />
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#grid)" />
+  </g>
+
+  <!-- Title Header -->
+  <g transform="translate(60, 50)">
+    <text class="title-text" x="0" y="0">Entity-Relationship Diagram (ERD)</text>
+    <text class="subtitle-text" x="0" y="24">Library Circulation &amp; Digital Resource Database · 3NF Normalized Architecture</text>
+    <text class="subtitle-text" x="0" y="44" style="fill:#38BDF8; font-weight:600;">Rohan Shikhar · 25WU0101112 · AIML Whales · Woxsen University</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(1420, 40)">
+    <rect width="440" height="70" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1" />
+    <circle cx="25" cy="25" r="7" fill="#0284C7" />
+    <text x="40" y="29" fill="#E2E8F0" font-size="12">Master Catalog Entity</text>
+    <circle cx="190" cy="25" r="7" fill="#4F46E5" />
+    <text x="205" y="29" fill="#E2E8F0" font-size="12">Circulation Core Entity</text>
+    <circle cx="340" cy="25" r="7" fill="#9333EA" />
+    <text x="355" y="29" fill="#E2E8F0" font-size="12">Digital Material</text>
+    <text x="20" y="55" fill="#94A3B8" font-size="11" font-family="'JetBrains Mono', monospace">PK: Primary Key | FK: Foreign Key | Cardinality: 1:M, M:N, 1:1</text>
+  </g>
+
+  <!-- ================= RELATIONSHIP CONNECTORS ================= -->
+  <g stroke="#475569" stroke-width="2" fill="none">
+    <!-- AUTHOR -> BOOK -->
+    <path d="M 230 230 L 230 330 L 460 330" />
+    <!-- PUBLISHER -> BOOK -->
+    <path d="M 230 450 L 340 450 L 340 370 L 460 370" />
+    <!-- CATEGORY -> BOOK -->
+    <path d="M 230 630 L 380 630 L 380 410 L 460 410" />
+    <!-- BOOK -> COPY -->
+    <path d="M 580 480 L 580 580" />
+    <!-- COPY -> ISSUE -->
+    <path d="M 680 660 L 860 660 L 860 520 L 980 520" />
+    <!-- MEMBER -> ISSUE -->
+    <path d="M 1080 340 L 1080 430" />
+    <!-- ISSUE -> RETURN -->
+    <path d="M 1180 500 L 1380 500" />
+    <!-- ISSUE -> FINE -->
+    <path d="M 1180 560 L 1280 560 L 1280 720 L 1380 720" />
+    <!-- MEMBER -> RESERVATION -->
+    <path d="M 980 260 L 760 260" />
+    <!-- RESERVATION -> BOOK -->
+    <path d="M 640 260 L 580 260 L 580 320" />
+    <!-- MEMBER -> DIGITAL_ACCESS_LOG -->
+    <path d="M 1180 260 L 1480 260" />
+    <!-- DIGITAL_RESOURCE -> DIGITAL_ACCESS_LOG -->
+    <path d="M 1600 370 L 1600 340" />
+  </g>
+
+  <!-- ================= ENTITY BOXES ================= -->
+
+  <!-- AUTHOR -->
+  <g transform="translate(100, 160)">
+    <rect width="240" height="130" rx="12" fill="#1E293B" stroke="#0284C7" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#0284C7" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">AUTHOR</text>
+    <text class="attr-text attr-pk" x="16" y="58">AuthorID (PK)</text>
+    <text class="attr-text" x="16" y="80">Name</text>
+    <text class="attr-text" x="16" y="102">Country</text>
+  </g>
+
+  <!-- PUBLISHER -->
+  <g transform="translate(100, 390)">
+    <rect width="240" height="130" rx="12" fill="#1E293B" stroke="#0284C7" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#0284C7" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">PUBLISHER</text>
+    <text class="attr-text attr-pk" x="16" y="58">PublisherID (PK)</text>
+    <text class="attr-text" x="16" y="80">PublisherName</text>
+    <text class="attr-text" x="16" y="102">City</text>
+  </g>
+
+  <!-- CATEGORY -->
+  <g transform="translate(100, 580)">
+    <rect width="240" height="110" rx="12" fill="#1E293B" stroke="#0284C7" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#0284C7" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">CATEGORY</text>
+    <text class="attr-text attr-pk" x="16" y="58">CategoryID (PK)</text>
+    <text class="attr-text" x="16" y="80">CategoryName</text>
+  </g>
+
+  <!-- BOOK -->
+  <g transform="translate(460, 320)">
+    <rect width="240" height="160" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="2.5" />
+    <path d="M 0 36 L 240 36" stroke="#38BDF8" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">BOOK (Title Catalog)</text>
+    <text class="attr-text attr-pk" x="16" y="58">BookID (PK)</text>
+    <text class="attr-text" x="16" y="80">ISBN (UQ)</text>
+    <text class="attr-text" x="16" y="102">Title</text>
+    <text class="attr-text attr-fk" x="16" y="124">CategoryID (FK)</text>
+    <text class="attr-text attr-fk" x="16" y="146">PublisherID (FK)</text>
+  </g>
+
+  <!-- COPY -->
+  <g transform="translate(460, 580)">
+    <rect width="240" height="140" rx="12" fill="#1E293B" stroke="#0284C7" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#0284C7" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">COPY (Shelf Units)</text>
+    <text class="attr-text attr-pk" x="16" y="58">CopyID (PK)</text>
+    <text class="attr-text" x="16" y="80">AccessionNo (UQ)</text>
+    <text class="attr-text attr-fk" x="16" y="102">BookID (FK)</text>
+    <text class="attr-text" x="16" y="124">Status (Avail/Issued)</text>
+  </g>
+
+  <!-- MEMBER -->
+  <g transform="translate(980, 180)">
+    <rect width="240" height="160" rx="12" fill="#1E293B" stroke="#0284C7" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#0284C7" stroke-width="1.5" />
+    <text class="entity-title" fill="#38BDF8" x="16" y="25">MEMBER (Borrower)</text>
+    <text class="attr-text attr-pk" x="16" y="58">MemberID (PK)</text>
+    <text class="attr-text" x="16" y="80">Name</text>
+    <text class="attr-text" x="16" y="102">Email (UQ)</text>
+    <text class="attr-text" x="16" y="124">MemberType (Student/Fac)</text>
+  </g>
+
+  <!-- ISSUE -->
+  <g transform="translate(980, 430)">
+    <rect width="240" height="165" rx="12" fill="#1E293B" stroke="#818CF8" stroke-width="2.5" />
+    <path d="M 0 36 L 240 36" stroke="#818CF8" stroke-width="1.5" />
+    <text class="entity-title" fill="#818CF8" x="16" y="25">ISSUE (Circulation)</text>
+    <text class="attr-text attr-pk" x="16" y="58">IssueID (PK)</text>
+    <text class="attr-text attr-fk" x="16" y="80">MemberID (FK)</text>
+    <text class="attr-text attr-fk" x="16" y="102">CopyID (FK)</text>
+    <text class="attr-text" x="16" y="124">IssueDate</text>
+    <text class="attr-text" x="16" y="146">DueDate</text>
+  </g>
+
+  <!-- RETURN -->
+  <g transform="translate(1380, 430)">
+    <rect width="240" height="120" rx="12" fill="#1E293B" stroke="#4F46E5" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#4F46E5" stroke-width="1.5" />
+    <text class="entity-title" fill="#818CF8" x="16" y="25">RETURN (Check-in)</text>
+    <text class="attr-text attr-pk" x="16" y="58">ReturnID (PK)</text>
+    <text class="attr-text attr-fk" x="16" y="80">IssueID (FK, UQ)</text>
+    <text class="attr-text" x="16" y="102">ReturnDate</text>
+  </g>
+
+  <!-- FINE -->
+  <g transform="translate(1380, 640)">
+    <rect width="240" height="140" rx="12" fill="#1E293B" stroke="#EF4444" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#EF4444" stroke-width="1.5" />
+    <text class="entity-title" fill="#F87171" x="16" y="25">FINE (Overdue Fee)</text>
+    <text class="attr-text attr-pk" x="16" y="58">FineID (PK)</text>
+    <text class="attr-text attr-fk" x="16" y="80">IssueID (FK, UQ)</text>
+    <text class="attr-text" x="16" y="102">Amount (₹)</text>
+    <text class="attr-text" x="16" y="124">PaidStatus (Paid/Unpaid)</text>
+  </g>
+
+  <!-- RESERVATION -->
+  <g transform="translate(540, 160)">
+    <rect width="240" height="150" rx="12" fill="#1E293B" stroke="#4F46E5" stroke-width="2" />
+    <path d="M 0 36 L 240 36" stroke="#4F46E5" stroke-width="1.5" />
+    <text class="entity-title" fill="#818CF8" x="16" y="25">RESERVATION (Queue)</text>
+    <text class="attr-text attr-pk" x="16" y="58">ReservationID (PK)</text>
+    <text class="attr-text attr-fk" x="16" y="80">MemberID (FK)</text>
+    <text class="attr-text attr-fk" x="16" y="102">BookID (FK)</text>
+    <text class="attr-text" x="16" y="124">ReservationDate | QueueNo</text>
+    <text class="attr-text" x="16" y="144">Status (Pending/Done)</text>
+  </g>
+
+  <!-- DIGITAL_RESOURCE -->
+  <g transform="translate(1480, 370)">
+    <rect width="250" height="135" rx="12" fill="#1E293B" stroke="#9333EA" stroke-width="2" />
+    <path d="M 0 36 L 250 36" stroke="#9333EA" stroke-width="1.5" />
+    <text class="entity-title" fill="#C084FC" x="16" y="25">DIGITAL_RESOURCE</text>
+    <text class="attr-text attr-pk" x="16" y="58">ResourceID (PK)</text>
+    <text class="attr-text" x="16" y="80">Title</text>
+    <text class="attr-text" x="16" y="102">Format (PDF/EPUB)</text>
+    <text class="attr-text" x="16" y="124">AccessURL</text>
+  </g>
+
+  <!-- DIGITAL_ACCESS_LOG -->
+  <g transform="translate(1480, 180)">
+    <rect width="250" height="145" rx="12" fill="#1E293B" stroke="#9333EA" stroke-width="2" />
+    <path d="M 0 36 L 250 36" stroke="#9333EA" stroke-width="1.5" />
+    <text class="entity-title" fill="#C084FC" x="16" y="25">DIGITAL_ACCESS_LOG</text>
+    <text class="attr-text attr-pk" x="16" y="58">LogID (PK)</text>
+    <text class="attr-text attr-fk" x="16" y="80">MemberID (FK)</text>
+    <text class="attr-text attr-fk" x="16" y="102">ResourceID (FK)</text>
+    <text class="attr-text" x="16" y="124">AccessDate</text>
+  </g>
+
+  <!-- ================= CARDINALITY LABELS ================= -->
+  <text class="cardinality" x="380" y="320">M:N</text>
+  <text class="cardinality" x="380" y="360">1:M</text>
+  <text class="cardinality" x="400" y="420">1:M</text>
+  <text class="cardinality" x="590" y="530">1:M</text>
+  <text class="cardinality" x="900" y="510">1:M</text>
+  <text class="cardinality" x="1090" y="380">1:M</text>
+  <text class="cardinality" x="1270" y="490">1:1</text>
+  <text class="cardinality" x="1290" y="610">1:0..1</text>
+  <text class="cardinality" x="850" y="250">1:M</text>
+  <text class="cardinality" x="1350" y="250">1:M</text>
+  <text class="cardinality" x="1610" y="355">1:M</text>
+
+  <!-- Footer -->
+  <g transform="translate(60, 1020)">
+    <text fill="#64748B" font-size="14" font-family="'JetBrains Mono', monospace">Library Circulation &amp; Digital Resource DBMS · 13 Relational Tables in Third Normal Form (3NF)</text>
+  </g>
+</svg>

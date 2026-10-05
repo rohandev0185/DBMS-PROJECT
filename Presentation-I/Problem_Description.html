@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Presentation-I: Problem Description & Scope</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0F172A;
+      color: #F8FAFC;
+      -webkit-print-color-adjust: exact;
+    }
+    .slide {
+      width: 16in;
+      height: 9in;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.5rem 4.5rem;
+      background: #0F172A;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(203, 213, 225, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(203, 213, 225, 0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .slide-header {
+      position: relative;
+      z-index: 10;
+    }
+    .kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      color: #38BDF8;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.15;
+    }
+    .content-box {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(203, 213, 225, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #38BDF8;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .card-text {
+      font-size: 1.1rem;
+      color: #94A3B8;
+      line-height: 1.6;
+    }
+    .card-list {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+    .card-list li {
+      font-size: 1.05rem;
+      color: #E2E8F0;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .card-list li::before {
+      content: '▹';
+      color: #38BDF8;
+      font-weight: bold;
+    }
+    .slide-footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid rgba(203, 213, 225, 0.1);
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #64748B;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide 1: Title Slide -->
+  <div class="slide" style="justify-content: center; text-align: center; align-items: center;">
+    <div style="max-width: 1000px; z-index: 10;">
+      <div class="kicker" style="font-size: 1.15rem; color: #818CF8; margin-bottom: 1rem;">DBMS Course Project · AIML Whales</div>
+      <h1 class="title" style="font-size: 3.5rem; margin-bottom: 1.5rem;">Library Circulation & Digital Resource Database</h1>
+      <p style="font-size: 1.35rem; color: #94A3B8; margin-bottom: 2.5rem; line-height: 1.6;">
+        Design and implementation of a 3NF-normalized relational database management system for physical library circulation, digital resources, and automated fines.
+      </p>
+      <div style="display: inline-flex; gap: 2rem; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(203, 213, 225, 0.2); border-radius: 16px; padding: 1.25rem 2.5rem; text-align: left;">
+        <div>
+          <div style="font-size: 0.8rem; color: #64748B; text-transform: uppercase;">Learner</div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF;">Rohan Shikhar</div>
+        </div>
+        <div style="border-left: 1px solid rgba(203, 213, 225, 0.2); padding-left: 2rem;">
+          <div style="font-size: 0.8rem; color: #64748B; text-transform: uppercase;">Roll Number</div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #38BDF8; font-family: 'JetBrains Mono', monospace;">25WU0101112</div>
+        </div>
+        <div style="border-left: 1px solid rgba(203, 213, 225, 0.2); padding-left: 2rem;">
+          <div style="font-size: 0.8rem; color: #64748B; text-transform: uppercase;">Institution</div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF;">Woxsen University</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer" style="position: absolute; bottom: 3rem; width: calc(100% - 9rem);">
+      <span>Presentation-I: Problem Description</span>
+      <span>DBMS-Course-Project · 2026</span>
+    </div>
+  </div>
+
+  <!-- Slide 2: Background & Context -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Context & Motivation</div>
+      <h2 class="title">Evolution of University Library Operations</h2>
+    </div>
+    <div class="content-box">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📖 Traditional Library Challenges</div>
+          <p class="card-text">
+            For decades, academic libraries relied entirely on physical card catalogs and manual ledger books. Counter staff recorded issues and returns by hand, causing friction, book loss, and billing inaccuracies.
+          </p>
+          <ul class="card-list" style="margin-top: 1rem;">
+            <li>High frequency of human transcription errors.</li>
+            <li>Lack of visibility into real-time shelf copy availability.</li>
+            <li>Inability to trace multi-author scholarly works efficiently.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">💻 The Modern Hybrid Paradigm</div>
+          <p class="card-text">
+            Contemporary universities like Woxsen provide both physical textbooks and digital e-journals/e-books. Managing them in isolated silos creates severe administrative blind spots.
+          </p>
+          <ul class="card-list" style="margin-top: 1rem;">
+            <li>Need for a unified relational system across physical and digital collections.</li>
+            <li>Automated tracking of student and faculty circulation policies.</li>
+            <li>Real-time fine computation and reservation queue prioritization.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rohan Shikhar (25WU0101112)</span>
+      <span>Slide 2</span>
+    </div>
+  </div>
+
+  <!-- Slide 3: Problem Statement -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Core Issues</div>
+      <h2 class="title">Problem Statement: Why Paper Systems Fail</h2>
+    </div>
+    <div class="content-box">
+      <div class="grid-2">
+        <div class="card" style="border-left: 4px solid #EF4444;">
+          <div class="card-title" style="color: #F87171;">1. Handwritten & Degraded Records</div>
+          <p class="card-text">Entries get copied wrongly, pages tear, and searching old paper registers requires hours of manual leafing. Discrepancies between physical shelf stock and ledger counts are rampant.</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #F59E0B;">
+          <div class="card-title" style="color: #FBBF24;">2. Zero Real-Time Shelf Visibility</div>
+          <p class="card-text">Counter librarians cannot instantly verify if a book copy is available, issued, or reserved without checking physical stacks, leading to long queues and wasted student time.</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #EF4444;">
+          <div class="card-title" style="color: #F87171;">3. Missed Due Dates & Slipping Fines</div>
+          <p class="card-text">Due dates must be checked manually. Overdue loans routinely go unnoticed, fine calculations are inconsistent, and institutional revenue is severely leaked.</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #818CF8;">
+          <div class="card-title" style="color: #A5B4FC;">4. Isolated Digital Collections</div>
+          <p class="card-text">PDFs, journals, and e-books live in disparate links or file folders without central authentication, usage analytics, or member audit trails.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rohan Shikhar (25WU0101112)</span>
+      <span>Slide 3</span>
+    </div>
+  </div>
+
+  <!-- Slide 4: Project Objectives -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Strategic Goals</div>
+      <h2 class="title">Project Objectives & Deliverables</h2>
+    </div>
+    <div class="content-box">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🎯 Objective 1: Automate Circulation Lifecycle</div>
+          <p class="card-text">Record every book checkout and check-in as discrete relational transactions in <code>ISSUE</code> and <code>RETURN</code>, automatically toggling physical copy status between <em>Available</em> and <em>Issued</em>.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🎯 Objective 2: Unified Hybrid Catalog</div>
+          <p class="card-text">Integrate physical catalog metadata (ISBN, category, publisher, author) with digital e-resources (PDFs, journals, access URLs) within a single normalized database.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🎯 Objective 3: Algorithmic Queue & Fines</div>
+          <p class="card-text">Eliminate manual calculations by computing overdue fines strictly from <code>DueDate</code> differences and managing reservation waiting queues in first-come, first-served order.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🎯 Objective 4: Live Relational Analytics & Web UI</div>
+          <p class="card-text">Build a responsive web application connected live to MySQL that enables real-time record viewing, insertion, deletion, and immediate query reporting.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rohan Shikhar (25WU0101112)</span>
+      <span>Slide 4</span>
+    </div>
+  </div>
+
+  <!-- Slide 5: System Stakeholders -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">User Architecture</div>
+      <h2 class="title">User Roles & Access Permissions</h2>
+    </div>
+    <div class="content-box">
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">🛡️ Administrator</div>
+          <p class="card-text" style="font-size: 0.95rem; margin-bottom: 0.75rem;">Full administrative governance over system data, structure, and reporting.</p>
+          <ul class="card-list">
+            <li>Manage Master Catalog & Publishers</li>
+            <li>Configure Loan Rules & System Parameters</li>
+            <li>Audit Full Digital Access Logs</li>
+            <li>Export Institutional Reports</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🏛️ Librarian (Staff)</div>
+          <p class="card-text" style="font-size: 0.95rem; margin-bottom: 0.75rem;">Front-counter operational handling of daily circulation activities.</p>
+          <ul class="card-list">
+            <li>Issue and Return Physical Copies</li>
+            <li>Register New Students & Members</li>
+            <li>Collect and Clear Overdue Fines</li>
+            <li>Process Waiting Reservations</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🎓 Student / Member</div>
+          <p class="card-text" style="font-size: 0.95rem; margin-bottom: 0.75rem;">End-user patrons seeking library materials and borrowing privileges.</p>
+          <ul class="card-list">
+            <li>Search Available Titles in Catalog</li>
+            <li>Place Reservations on Busy Books</li>
+            <li>Access Online Digital Resources</li>
+            <li>View Personal Borrowing History</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rohan Shikhar (25WU0101112)</span>
+      <span>Slide 5</span>
+    </div>
+  </div>
+
+  <!-- Slide 6: Expected Impact & Conclusion -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Value Proposition</div>
+      <h2 class="title">Project Scope & Expected Impact</h2>
+    </div>
+    <div class="content-box">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⚡ Operational Efficiencies</div>
+          <ul class="card-list">
+            <li><strong>Checkout speed:</strong> Book issue and return completed in &lt; 5 seconds via accession numbers.</li>
+            <li><strong>Zero manual fine computation:</strong> System automatically calculates late fees based on calendar difference.</li>
+            <li><strong>Strict integrity:</strong> Foreign keys and unique constraints prevent duplicate accession tags and orphan loans.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🛠️ Technical Implementation Stack</div>
+          <ul class="card-list">
+            <li><strong>Database:</strong> MySQL Server 9.7 (InnoDB, Foreign Key enforcement, 13 Normalized Tables in 3NF).</li>
+            <li><strong>Backend Engine:</strong> Python 3.14 with Flask REST API and PyMySQL connection pooling.</li>
+            <li><strong>Frontend Interface:</strong> Vanilla CSS & Responsive Modern UI with real-time MySQL synchronization.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Rohan Shikhar (25WU0101112)</span>
+      <span>Slide 6</span>
+    </div>
+  </div>
+
+</body>
+</html>

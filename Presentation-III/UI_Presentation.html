@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Presentation-III: UI Architecture & Full-Stack Implementation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+    
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #09090B;
+      color: #FAFAFA;
+      -webkit-print-color-adjust: exact;
+    }
+    .slide {
+      width: 16in;
+      height: 9in;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.2rem 4.5rem;
+      background: #09090B;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+    .slide-header {
+      position: relative;
+      z-index: 10;
+    }
+    .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.95rem;
+      color: #A1A1AA;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    .title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      color: #A1A1AA;
+      margin-top: 0.4rem;
+    }
+
+    /* BENTO & GRID LAYOUTS */
+    .slide-body {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      margin: 1.6rem 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      width: 100%;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.8rem;
+      width: 100%;
+    }
+    .card {
+      background: #141418;
+      border: 1px solid #27272A;
+      border-radius: 12px;
+      padding: 1.8rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+    }
+    .card-accent {
+      border-top: 3px solid #FAFAFA;
+      background: #18181E;
+    }
+    .card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #27272A;
+      color: #E4E4E7;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .card li {
+      font-size: 0.98rem;
+      color: #D4D4D8;
+      line-height: 1.45;
+      position: relative;
+      padding-left: 1.2rem;
+    }
+    .card li::before {
+      content: '■';
+      position: absolute;
+      left: 0;
+      font-size: 0.65rem;
+      color: #A1A1AA;
+      top: 0.25rem;
+    }
+    .code-pill {
+      font-family: 'IBM Plex Mono', monospace;
+      background: #27272A;
+      color: #FAFAFA;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+
+    /* FOOTER */
+    .slide-footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #27272A;
+      padding-top: 1rem;
+      font-size: 0.88rem;
+      color: #71717A;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* ARCHITECTURE FLOW */
+    .flow-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 1rem;
+    }
+    .flow-box {
+      flex: 1;
+      background: #141418;
+      border: 1px solid #27272A;
+      border-radius: 12px;
+      padding: 1.6rem;
+      text-align: center;
+    }
+    .flow-arrow {
+      font-size: 1.8rem;
+      color: #71717A;
+      font-weight: 700;
+    }
+    .flow-box h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.4rem;
+      color: #FAFAFA;
+    }
+    .flow-box p {
+      font-size: 0.9rem;
+      color: #A1A1AA;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: TITLE SLIDE -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Presentation-III • Final Evaluation</div>
+      <h1 class="title">Library Circulation & Digital Resource<br>Database Management System</h1>
+      <div class="subtitle">System Architecture, Frontend Implementation & Backend Database Connectivity</div>
+    </div>
+    <div class="slide-body">
+      <div class="card card-accent" style="width: 100%; max-width: 650px;">
+        <span class="tag">Course Project Presentation</span>
+        <div style="font-size: 1.2rem; color: #FFFFFF; font-weight: 600; margin-top: 0.5rem;">
+          Learner: Rohan Shikhar | Roll No: 25WU0101112
+        </div>
+        <div style="font-size: 0.95rem; color: #A1A1AA; line-height: 1.6;">
+          Department of Computer Science & Engineering<br>
+          School of Technology, Woxsen University<br>
+          Course: Database Management Systems (DBMS)
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>DBMS Course Project — Presentation-III</span>
+      <span>Slide 1 of 5</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: 3-TIER SYSTEM ARCHITECTURE -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">System Architecture</div>
+      <h2 class="title">End-to-End 3-Tier Enterprise Architecture</h2>
+      <div class="subtitle">Decoupled separation of concerns from Client UI to Relational Database</div>
+    </div>
+    <div class="slide-body">
+      <div class="flow-container">
+        <div class="flow-box">
+          <span class="tag">Tier 1 • Client</span>
+          <h4 style="margin-top:0.8rem;">Presentation Layer</h4>
+          <p><strong>HTML5, CSS3, JavaScript (ES6+)</strong></p>
+          <p style="margin-top:0.5rem;">Monochrome Bento Grid UI, live DOM updates, async Fetch API, zero frontend bundle overhead.</p>
+        </div>
+        <div class="flow-arrow">⇄</div>
+        <div class="flow-box" style="border-color: #FAFAFA;">
+          <span class="tag">Tier 2 • Server</span>
+          <h4 style="margin-top:0.8rem;">Application Layer</h4>
+          <p><strong>Python 3.12 + Flask</strong></p>
+          <p style="margin-top:0.5rem;">RESTful JSON endpoints, routing, parameter sanitization, error dispatch, business logic.</p>
+        </div>
+        <div class="flow-arrow">⇄</div>
+        <div class="flow-box">
+          <span class="tag">Tier 3 • Driver & DB</span>
+          <h4 style="margin-top:0.8rem;">Database Layer</h4>
+          <p><strong>PyMySQL + MySQL 9.7</strong></p>
+          <p style="margin-top:0.5rem;">Connection pooling, parameterized DML/DDL queries, ACID transactions, referential integrity.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Architecture & Integration Overview</span>
+      <span>Slide 2 of 5</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: FRONTEND TECHNOLOGY STACK -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Frontend Tech Stack</div>
+      <h2 class="title">Modern Client-Side Implementation</h2>
+      <div class="subtitle">Engineered with Vanilla web standards for peak performance, clarity, and zero external bloat</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <span class="tag">Markup</span>
+          <h3>HTML5 Semantic Layout</h3>
+          <ul>
+            <li>Modular structure with Bento Grid layout for catalog cards and quick metrics.</li>
+            <li>Interactive modal dialogs for Insert, Delete, and Issue record operations.</li>
+            <li>Tabbed navigation for Books, Members, Loans, Digital Resources, and Custom SQL Queries.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Styling</span>
+          <h3>Vanilla CSS3 Design System</h3>
+          <ul>
+            <li>High-contrast <strong>Monochrome & Dark Mode</strong> palette (#09090B void, #18181B surfaces).</li>
+            <li>Fluid CSS Flexbox & CSS Grid layouts with responsive breakpoints.</li>
+            <li>Custom micro-interactions, smooth hover transitions, and status pill badges.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Client Logic</span>
+          <h3>JavaScript (ES6+)</h3>
+          <ul>
+            <li><span class="code-pill">fetch()</span> asynchronous API calls for seamless real-time data sync without full page reload.</li>
+            <li>Dynamic DOM rendering for data tables and search/filtering algorithms.</li>
+            <li>Live toast notification banners for operational confirmation (Insert/Delete success).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Frontend Design & User Experience</span>
+      <span>Slide 3 of 5</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: BACKEND TECHNOLOGY STACK -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Backend Tech Stack</div>
+      <h2 class="title">Server Architecture & Database Connectivity</h2>
+      <div class="subtitle">Robust Python Flask REST microservices backed by MySQL relational database</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <span class="tag">Web Framework</span>
+          <h3>Python 3.12 & Flask</h3>
+          <ul>
+            <li>Lightweight WSGI framework serving RESTful JSON endpoints.</li>
+            <li>Configurable environment via <span class="code-pill">config.py</span> for local MySQL instance credentials.</li>
+            <li>Centralized error handling returning JSON error payloads with proper HTTP status codes.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Database Driver</span>
+          <h3>PyMySQL Connector</h3>
+          <ul>
+            <li>Pure-Python MySQL client driver providing direct TCP socket connection.</li>
+            <li><strong>Parameterized Queries (<span class="code-pill">%s</span>)</strong> across all endpoints to prevent SQL injection vulnerabilities.</li>
+            <li>Automatic transaction management with explicit <span class="code-pill">conn.commit()</span> and <span class="code-pill">conn.rollback()</span>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">RDBMS</span>
+          <h3>MySQL 9.7 Server</h3>
+          <ul>
+            <li>Normalized relational schema (<span class="code-pill">LibraryDbms</span>) maintaining 3NF integrity.</li>
+            <li>Foreign Key constraints with <span class="code-pill">ON DELETE CASCADE</span> / <span class="code-pill">RESTRICT</span>.</li>
+            <li>Complex JOIN queries, aggregations, and fine calculation views executed natively.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Backend Services & Data Access</span>
+      <span>Slide 4 of 5</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: LIVE CRUD OPERATIONS & ENDPOINTS -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="kicker">Evaluation Demo Requirements</div>
+      <h2 class="title">CRUD Operations & REST API Endpoints</h2>
+      <div class="subtitle">Direct mapping of UI interactions to SQL database mutations</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="card">
+          <span class="tag">Operation: INSERT</span>
+          <h3>Record Creation</h3>
+          <ul>
+            <li><strong>Endpoint:</strong> <span class="code-pill">POST /api/books</span></li>
+            <li><strong>UI Action:</strong> "Add New Book" Modal with ISBN, Title, Category, Author, Publisher.</li>
+            <li><strong>SQL Execution:</strong> <span class="code-pill">INSERT INTO BOOK (...) VALUES (...)</span></li>
+            <li><strong>Result:</strong> Real-time table refresh + toast notification.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Operation: DELETE</span>
+          <h3>Record Removal</h3>
+          <ul>
+            <li><strong>Endpoint:</strong> <span class="code-pill">DELETE /api/books/&lt;id&gt;</span></li>
+            <li><strong>UI Action:</strong> Delete button on catalog rows with confirmation prompt.</li>
+            <li><strong>SQL Execution:</strong> <span class="code-pill">DELETE FROM BOOK WHERE BookID = %s</span></li>
+            <li><strong>Result:</strong> Row smoothly unmounts; constraints verified.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag">Operation: VIEW</span>
+          <h3>Live Query & Read</h3>
+          <ul>
+            <li><strong>Endpoints:</strong> <span class="code-pill">GET /api/books</span>, <span class="code-pill">GET /api/issues</span></li>
+            <li><strong>UI Action:</strong> Live catalog table, member loan ledger, metrics cards.</li>
+            <li><strong>SQL Execution:</strong> Multi-table <span class="code-pill">LEFT JOIN</span> queries for live availability status.</li>
+            <li><strong>Result:</strong> Instant search, sort, and status badges.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Live Demonstration Guide — Presentation-III</span>
+      <span>Slide 5 of 5</span>
+    </div>
+  </div>
+
+</body>
+</html>

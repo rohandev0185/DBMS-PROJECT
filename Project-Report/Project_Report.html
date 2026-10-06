@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Report - Library Circulation &amp; Digital Resource Management System</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@600;700&display=swap');
+
+    @page {
+      size: A4;
+      margin: 2cm 2.2cm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #fff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ══════════════ COVER PAGE (formal academic) ══════════════ */
+    .cover {
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2cm 3cm;
+      text-align: center;
+      border: 3px solid #1a1a2e;
+      position: relative;
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid #1a1a2e;
+      pointer-events: none;
+    }
+    .cover-university {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26pt;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.2rem;
+    }
+    .cover-school {
+      font-family: 'Inter', sans-serif;
+      font-size: 14pt;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 1.8rem;
+    }
+    .cover-logo {
+      width: 140px;
+      height: auto;
+      margin-bottom: 2rem;
+    }
+    .cover-label {
+      font-size: 10pt;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-bottom: 0.3rem;
+    }
+    .cover-report-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16pt;
+      font-weight: 700;
+      color: #1a1a2e;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+    .cover-on {
+      font-size: 10pt;
+      color: #94a3b8;
+      margin-bottom: 1.2rem;
+    }
+    .cover-project-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18pt;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.35;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      text-transform: uppercase;
+    }
+    .cover-meta-line {
+      font-size: 11pt;
+      color: #475569;
+      margin-bottom: 0.3rem;
+    }
+    .cover-meta-line em {
+      font-style: italic;
+      color: #94a3b8;
+    }
+    .cover-divider {
+      width: 200px;
+      height: 1px;
+      background: #1a1a2e;
+      margin: 1.2rem auto;
+    }
+    .cover-submitted {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 0.6rem;
+    }
+    .cover-student {
+      font-size: 12pt;
+      color: #1a1a2e;
+      margin-bottom: 0.1rem;
+    }
+    .cover-roll {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10pt;
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+    .cover-degree {
+      font-size: 10pt;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .cover-year {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-top: 1.5rem;
+    }
+
+    /* ══════════════ SECTION PAGES ══════════════ */
+    .page-break { page-break-before: always; }
+
+    /* section headings */
+    h1.section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18pt;
+      font-weight: 700;
+      color: #0f172a;
+      padding-bottom: 0.4rem;
+      border-bottom: 3px solid #0f172a;
+      margin-bottom: 1.2rem;
+      margin-top: 0;
+    }
+    h1.section-title span.num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10pt;
+      font-weight: 400;
+      color: #38bdf8;
+      background: #0f172a;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin: 1.4rem 0 0.5rem;
+      padding-left: 10px;
+      border-left: 4px solid #38bdf8;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+      font-weight: 600;
+      color: #334155;
+      margin: 1rem 0 0.3rem;
+    }
+
+    p { margin-bottom: 0.6rem; }
+    ul, ol { margin: 0.4rem 0 0.7rem 1.4rem; }
+    li { margin-bottom: 0.2rem; }
+
+    /* ══════════════ TABLES ══════════════ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.6rem 0 1rem;
+      font-size: 9.5pt;
+    }
+    th {
+      background: #0f172a;
+      color: #f8fafc;
+      font-weight: 600;
+      padding: 7px 10px;
+      text-align: left;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8.5pt;
+      letter-spacing: 0.04em;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f8fafc; }
+    tr:last-child td { border-bottom: 2px solid #0f172a; }
+
+    /* ══════════════ CODE ══════════════ */
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      padding: 0.8rem 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin: 0.5rem 0 0.8rem;
+      line-height: 1.55;
+      border-left: 4px solid #38bdf8;
+      white-space: pre-wrap;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* ══════════════ CALLOUTS ══════════════ */
+    .callout {
+      border-radius: 5px;
+      padding: 0.6rem 1rem;
+      margin: 0.6rem 0;
+      font-size: 9.5pt;
+    }
+    .callout-info { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .callout-success { background: #f0fdf4; border-left: 4px solid #22c55e; color: #15803d; }
+    .callout-warn { background: #fffbeb; border-left: 4px solid #f59e0b; color: #92400e; }
+
+    /* ══════════════ SCHEMA GRID ══════════════ */
+    .schema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      margin: 0.6rem 0;
+    }
+    .schema-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+      break-inside: avoid;
+    }
+    .schema-card-header {
+      background: #1e293b;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      font-weight: 600;
+      padding: 5px 10px;
+    }
+    .schema-card table { margin: 0; }
+    .schema-card th { background: #334155; font-size: 7.5pt; padding: 4px 8px; }
+    .schema-card td { font-size: 8pt; padding: 3px 8px; }
+
+    /* ══════════════ QUERY OUTPUT ══════════════ */
+    .query-output {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 0.6rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      margin: 0.3rem 0 0.8rem;
+      color: #334155;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ══════════════ TEST STATUS ══════════════ */
+    .test-pass { color: #15803d; font-weight: 600; }
+
+    /* ══════════════ TOC ══════════════ */
+    .toc-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px dotted #cbd5e1;
+      font-size: 10.5pt;
+    }
+    .toc-dots { flex: 1; border-bottom: 1px dotted #cbd5e1; margin: 0 8px 3px; }
+    .toc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      color: #38bdf8;
+      margin-right: 8px;
+    }
+
+    /* ══════════════ FOOTER ══════════════ */
+    .report-footer {
+      font-size: 8pt;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* keep related content together */
+    h2, h3 { page-break-after: avoid; }
+    table, pre, .callout, .schema-card { page-break-inside: avoid; }
+
+    @media print {
+      .cover { min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     COVER PAGE — Formal Academic (Woxsen Style)
+═══════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-university">Woxsen University</div>
+  <div class="cover-school">School of Technology</div>
+
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Woxsen.png"
+    alt="Woxsen University Logo"
+    class="cover-logo"
+  />
+
+  <div class="cover-label">A</div>
+  <div class="cover-report-title">Project Report</div>
+  <div class="cover-on">on</div>
+
+  <div class="cover-project-title">
+    Library Circulation &amp; Digital Resource<br>Management System
+  </div>
+
+  <div class="cover-meta-line"><em>Submitted in partial fulfillment of the requirements for the degree of</em></div>
+  <div class="cover-meta-line" style="font-weight:600; color:#1a1a2e; margin-bottom:1.5rem;">B.Tech in Artificial Intelligence &amp; Machine Learning</div>
+
+  <div class="cover-divider"></div>
+
+  <div class="cover-submitted">Submitted by:</div>
+  <div class="cover-student">Rohan Shikhar</div>
+  <div class="cover-roll">25WU0101112</div>
+
+  <div class="cover-degree">
+    Department of Computer Science &amp; Engineering<br>
+    Section: AIML Whales<br>
+    Course: Database Management Systems
+  </div>
+
+  <div class="cover-year">Academic Year 2025 - 2026</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title">Table of Contents</h1>
+  <div style="max-width:600px; margin-top:0.8rem;">
+    <div class="toc-entry"><span><span class="toc-num">01</span> Abstract</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">02</span> Introduction &amp; Problem Statement</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">03</span> Objectives &amp; Scope</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">04</span> Software &amp; Hardware Requirements</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">05</span> ER Diagram</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">06</span> Relational Schema &amp; Normalization</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">07</span> Data Dictionary</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">08</span> SQL Commands (DDL &amp; DML) with Sample Outputs</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">09</span> Queries with Outputs</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">10</span> UI Design &amp; Screenshots</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">11</span> Implementation Details</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">12</span> Testing</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">13</span> Conclusion &amp; Future Enhancements</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">14</span> References</span><div class="toc-dots"></div></div>
+    <div class="toc-entry"><span><span class="toc-num">15</span> Appendix: GitHub Repository Link</span><div class="toc-dots"></div></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     01 — ABSTRACT
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">01</span> Abstract</h1>
+  <p>
+    This project presents the design, development, and implementation of a <strong>Library Circulation and Digital Resource Management System</strong> using MySQL 9.7 as the relational database engine and Python Flask as the web application backend. The system models a real-world university library through a normalized 13-table relational schema in Third Normal Form (3NF), managing the full lifecycle of physical book copies — from cataloguing and member registration to circulation (issue and return), fine calculation, and reservation queuing — while simultaneously indexing digital e-books and journals.
+  </p>
+  <p>
+    A browser-based user interface, built with Vanilla HTML, CSS, and JavaScript, connects to the MySQL database via a REST API and supports live insertion, deletion, and viewing of records. The project demonstrates practical application of relational modelling concepts including entity identification, foreign-key referencing, many-to-many junction tables, and multi-table analytical queries.
+  </p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     02 — INTRODUCTION & PROBLEM STATEMENT
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">02</span> Introduction &amp; Problem Statement</h1>
+
+  <h2>Background</h2>
+  <p>
+    University libraries are complex operational environments that maintain thousands of physical books, track borrowing by hundreds of members, impose return deadlines, collect fines for overdue items, and host growing collections of electronic resources. Managing this with paper registers or spreadsheets leads to data inconsistency, duplication, and slow lookups.
+  </p>
+  <p>
+    A relational database provides the ideal solution: structured tables with referential integrity ensure no book copy can be issued to a non-existent member, no fine can reference a non-existent issue, and aggregation queries can instantly answer complex operational questions.
+  </p>
+
+  <h2>Problem Statement</h2>
+  <p>The system must solve the following real-world problems faced by a university library:</p>
+  <ul>
+    <li><strong>Book catalogue management:</strong> Maintaining book titles, ISBNs, authors, categories, and publishers without redundancy.</li>
+    <li><strong>Physical copy tracking:</strong> Each physical copy has a unique accession number and availability status (Available / Issued / Reserved / Lost).</li>
+    <li><strong>Circulation control:</strong> Recording issue and return dates per copy per member, preventing double-issuing.</li>
+    <li><strong>Overdue and fine management:</strong> Identifying overdue books and associating fine amounts with issue records.</li>
+    <li><strong>Reservation queuing:</strong> Allowing members to reserve popular titles and tracking queue positions.</li>
+    <li><strong>Digital resource access logging:</strong> Tracking who accessed which e-book or journal and when.</li>
+    <li><strong>Role-based portal access:</strong> Separate workflows for Admin (insert, delete, manage) and Student (browse, borrow).</li>
+  </ul>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     03 — OBJECTIVES & SCOPE
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">03</span> Objectives &amp; Scope</h1>
+
+  <h2>Objectives</h2>
+  <ol>
+    <li>Design a normalized relational schema (3NF) that eliminates data redundancy and maintains referential integrity for all library entities.</li>
+    <li>Implement the full DDL (table creation, constraints, views) and DML (seed data, transactions) in MySQL 9.7.</li>
+    <li>Build a Flask REST API that exposes CRUD endpoints for all major entities.</li>
+    <li>Develop a browser-based UI supporting live Insert, Delete, and View operations with real-time MySQL synchronization.</li>
+    <li>Execute and present five analytical SQL queries covering availability tracking, circulation history, overdue reporting, demand analysis, and fine summaries.</li>
+    <li>Demonstrate the system live during Presentation-III.</li>
+  </ol>
+
+  <h2>Scope</h2>
+  <div class="callout callout-info">
+    <strong>In Scope:</strong> Book catalogue, physical copy management, member registration, issue/return workflow, fine records, reservation queue, digital resources, digital access log, role-based UI, 5 evaluated SQL queries, REST API with JSON responses.
+  </div>
+  <div class="callout callout-warn">
+    <strong>Out of Scope:</strong> Payment gateway integration, email/SMS notifications, mobile application, barcode/RFID hardware, multi-branch library support.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     04 — SOFTWARE & HARDWARE REQUIREMENTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">04</span> Software &amp; Hardware Requirements</h1>
+
+  <h2>Software Requirements</h2>
+  <table>
+    <thead><tr><th>Component</th><th>Technology / Version</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>Database Engine</td><td>MySQL Community Server 9.7 (InnoDB)</td><td>Persistent relational data store</td></tr>
+      <tr><td>Backend Language</td><td>Python 3.14</td><td>Application logic and API server</td></tr>
+      <tr><td>Web Framework</td><td>Flask 3.x</td><td>REST API routing and Jinja2 templating</td></tr>
+      <tr><td>Database Connector</td><td>PyMySQL 1.x</td><td>Python-to-MySQL communication</td></tr>
+      <tr><td>Frontend</td><td>HTML5 + Vanilla CSS + Vanilla JS</td><td>User interface rendered in browser</td></tr>
+      <tr><td>Fonts</td><td>Google Fonts (Inter, Space Grotesk, JetBrains Mono)</td><td>UI typography</td></tr>
+      <tr><td>Operating System</td><td>Windows 11</td><td>Development and runtime environment</td></tr>
+      <tr><td>Version Control</td><td>Git + GitHub</td><td>Source code management</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Hardware Requirements</h2>
+  <table>
+    <thead><tr><th>Component</th><th>Minimum</th><th>Used in Project</th></tr></thead>
+    <tbody>
+      <tr><td>Processor</td><td>Dual-core, 1.5 GHz</td><td>Intel/AMD multi-core laptop</td></tr>
+      <tr><td>RAM</td><td>4 GB</td><td>8+ GB</td></tr>
+      <tr><td>Storage</td><td>500 MB free</td><td>SSD</td></tr>
+      <tr><td>Network</td><td>localhost (127.0.0.1)</td><td>LAN / localhost:5000</td></tr>
+      <tr><td>Browser</td><td>Any modern browser</td><td>Google Chrome / Edge</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     05 — ER DIAGRAM
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">05</span> ER Diagram</h1>
+  <p>The Entity-Relationship diagram below shows all 13 entities and their relationships. Crow's-foot notation denotes cardinality.</p>
+
+  <pre style="font-size:8pt; line-height:1.8;">
+CATEGORY (1) ──────────────── (M) BOOK (M) ──────────────── (M) AUTHOR
+                                    |                        (via BOOK_AUTHOR)
+                                    | 1:M
+PUBLISHER (1) ─────────────── (M) BOOK
+                                    |
+                                  (M) COPY ── Status: Available / Issued / Reserved / Lost
+                                    |
+                                    | 1:M (CopyID)
+MEMBER (1) ────────────── (M) ISSUE ──────────────────── (0..1) RETURN
+   |                            |
+   |                            └────────────────────── (0..1) FINE
+   |
+   └──────────────── (M) RESERVATION ─── (M) BOOK
+   |
+   └──────────────── (M) DIGITAL_ACCESS_LOG ─── (M) DIGITAL_RESOURCE</pre>
+
+  <h2>Entity Summary</h2>
+  <table>
+    <thead><tr><th>Entity</th><th>Primary Key</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>CATEGORY</td><td>CategoryID</td><td>Subject classification (DBMS, OS, AI, etc.)</td></tr>
+      <tr><td>PUBLISHER</td><td>PublisherID</td><td>Book publisher details</td></tr>
+      <tr><td>AUTHOR</td><td>AuthorID</td><td>Author name and country</td></tr>
+      <tr><td>BOOK</td><td>BookID</td><td>Unique book title entity</td></tr>
+      <tr><td>BOOK_AUTHOR</td><td>(BookID, AuthorID)</td><td>M:N junction - one book can have many authors</td></tr>
+      <tr><td>COPY</td><td>CopyID</td><td>Individual physical copy on the shelf</td></tr>
+      <tr><td>MEMBER</td><td>MemberID</td><td>Registered student or faculty</td></tr>
+      <tr><td>ISSUE</td><td>IssueID</td><td>Circulation transaction (who borrowed which copy)</td></tr>
+      <tr><td>RETURN</td><td>ReturnID</td><td>Closes an open issue record</td></tr>
+      <tr><td>RESERVATION</td><td>ReservationID</td><td>Queue entry when all copies are issued</td></tr>
+      <tr><td>FINE</td><td>FineID</td><td>Overdue late fee linked to an issue</td></tr>
+      <tr><td>DIGITAL_RESOURCE</td><td>ResourceID</td><td>E-book or journal with access URL</td></tr>
+      <tr><td>DIGITAL_ACCESS_LOG</td><td>LogID</td><td>Audit log of digital resource access events</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     06 — RELATIONAL SCHEMA & NORMALIZATION
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">06</span> Relational Schema &amp; Normalization</h1>
+
+  <h2>Relational Schema</h2>
+  <pre>CATEGORY     (CategoryID PK, CategoryName UNIQUE NOT NULL)
+PUBLISHER    (PublisherID PK, PublisherName UNIQUE NOT NULL, City)
+AUTHOR       (AuthorID PK, Name NOT NULL, Country)
+BOOK         (BookID PK, ISBN UNIQUE NOT NULL, Title NOT NULL,
+              CategoryID FK->CATEGORY, PublisherID FK->PUBLISHER)
+BOOK_AUTHOR  (BookID FK->BOOK, AuthorID FK->AUTHOR)  [Composite PK]
+COPY         (CopyID PK, AccessionNo UNIQUE NOT NULL,
+              BookID FK->BOOK, Status ENUM[Available,Issued,Reserved,Lost])
+MEMBER       (MemberID PK, Name NOT NULL, Email UNIQUE NOT NULL, MemberType)
+ISSUE        (IssueID PK, MemberID FK->MEMBER, CopyID FK->COPY,
+              IssueDate DATE, DueDate DATE)
+RETURN       (ReturnID PK, IssueID UNIQUE FK->ISSUE, ReturnDate DATE)
+RESERVATION  (ReservationID PK, MemberID FK->MEMBER, BookID FK->BOOK,
+              ReservationDate DATE, QueueNo INT, Status VARCHAR)
+FINE         (FineID PK, IssueID UNIQUE FK->ISSUE,
+              Amount DECIMAL(8,2), PaidStatus ENUM[Paid,Unpaid])
+DIGITAL_RESOURCE   (ResourceID PK, Title, Format, AccessURL)
+DIGITAL_ACCESS_LOG (LogID PK, MemberID FK->MEMBER,
+                    ResourceID FK->DIGITAL_RESOURCE, AccessDate DATETIME)</pre>
+
+  <h2>Normalization Analysis</h2>
+
+  <h3>First Normal Form (1NF)</h3>
+  <p>All attributes are atomic. No repeating groups. The M:N relationship between BOOK and AUTHOR is resolved into the <code>BOOK_AUTHOR</code> junction table instead of storing a comma-delimited author column.</p>
+
+  <h3>Second Normal Form (2NF)</h3>
+  <p>Every non-key attribute is fully functionally dependent on the entire primary key. The only composite PK is <code>BOOK_AUTHOR(BookID, AuthorID)</code> which has no non-key attributes - 2NF is satisfied trivially.</p>
+
+  <h3>Third Normal Form (3NF)</h3>
+  <p>No transitive dependencies exist:</p>
+  <ul>
+    <li>Publisher city is in <code>PUBLISHER</code>, not in <code>BOOK</code> - removing the transitive dependency Book->Publisher->City.</li>
+    <li>Category name is in <code>CATEGORY</code>, not repeated in <code>BOOK</code>.</li>
+    <li>Author country is in <code>AUTHOR</code>, not in <code>BOOK_AUTHOR</code>.</li>
+    <li>Fine amount is in <code>FINE</code>, not duplicated in <code>MEMBER</code> or <code>COPY</code>.</li>
+  </ul>
+  <div class="callout callout-success">The schema is fully in 3NF. All determinants in non-trivial functional dependencies are superkeys of their respective tables.</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     07 — DATA DICTIONARY
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">07</span> Data Dictionary</h1>
+
+  <div class="schema-grid">
+    <div class="schema-card">
+      <div class="schema-card-header">CATEGORY</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>CategoryID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>CategoryName</td><td>VARCHAR(100)</td><td>NOT NULL, UNIQUE</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">PUBLISHER</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>PublisherID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>PublisherName</td><td>VARCHAR(150)</td><td>NOT NULL, UNIQUE</td></tr>
+        <tr><td>City</td><td>VARCHAR(100)</td><td>-</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">AUTHOR</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>AuthorID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>Name</td><td>VARCHAR(150)</td><td>NOT NULL</td></tr>
+        <tr><td>Country</td><td>VARCHAR(100)</td><td>-</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">BOOK</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>BookID</td><td>INT</td><td>PK</td></tr>
+        <tr><td>ISBN</td><td>VARCHAR(20)</td><td>NOT NULL, UNIQUE</td></tr>
+        <tr><td>Title</td><td>VARCHAR(200)</td><td>NOT NULL</td></tr>
+        <tr><td>CategoryID</td><td>INT</td><td>FK -> CATEGORY</td></tr>
+        <tr><td>PublisherID</td><td>INT</td><td>FK -> PUBLISHER</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">BOOK_AUTHOR (Junction)</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>BookID</td><td>INT</td><td>PK, FK -> BOOK</td></tr>
+        <tr><td>AuthorID</td><td>INT</td><td>PK, FK -> AUTHOR</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">COPY</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>CopyID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>AccessionNo</td><td>VARCHAR(50)</td><td>NOT NULL, UNIQUE</td></tr>
+        <tr><td>BookID</td><td>INT</td><td>FK -> BOOK</td></tr>
+        <tr><td>Status</td><td>ENUM</td><td>Available/Issued/Reserved/Lost</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">MEMBER</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>MemberID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>Name</td><td>VARCHAR(150)</td><td>NOT NULL</td></tr>
+        <tr><td>Email</td><td>VARCHAR(150)</td><td>NOT NULL, UNIQUE</td></tr>
+        <tr><td>MemberType</td><td>VARCHAR(50)</td><td>DEFAULT 'Student'</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">ISSUE</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>IssueID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>MemberID</td><td>INT</td><td>FK -> MEMBER</td></tr>
+        <tr><td>CopyID</td><td>INT</td><td>FK -> COPY</td></tr>
+        <tr><td>IssueDate</td><td>DATE</td><td>NOT NULL</td></tr>
+        <tr><td>DueDate</td><td>DATE</td><td>NOT NULL</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">RETURN</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>ReturnID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>IssueID</td><td>INT</td><td>UNIQUE FK -> ISSUE</td></tr>
+        <tr><td>ReturnDate</td><td>DATE</td><td>NOT NULL</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">FINE</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>FineID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>IssueID</td><td>INT</td><td>UNIQUE FK -> ISSUE</td></tr>
+        <tr><td>Amount</td><td>DECIMAL(8,2)</td><td>NOT NULL</td></tr>
+        <tr><td>PaidStatus</td><td>ENUM</td><td>Paid / Unpaid</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">RESERVATION</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>ReservationID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>MemberID</td><td>INT</td><td>FK -> MEMBER</td></tr>
+        <tr><td>BookID</td><td>INT</td><td>FK -> BOOK</td></tr>
+        <tr><td>ReservationDate</td><td>DATE</td><td>NOT NULL</td></tr>
+        <tr><td>QueueNo</td><td>INT</td><td>DEFAULT 1</td></tr>
+        <tr><td>Status</td><td>VARCHAR(50)</td><td>DEFAULT 'Pending'</td></tr>
+      </tbody></table>
+    </div>
+    <div class="schema-card">
+      <div class="schema-card-header">DIGITAL_RESOURCE</div>
+      <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+        <tr><td>ResourceID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+        <tr><td>Title</td><td>VARCHAR(200)</td><td>NOT NULL</td></tr>
+        <tr><td>Format</td><td>VARCHAR(50)</td><td>NOT NULL</td></tr>
+        <tr><td>AccessURL</td><td>VARCHAR(255)</td><td>NOT NULL</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+
+  <div class="schema-card" style="margin-top:0.5rem;">
+    <div class="schema-card-header">DIGITAL_ACCESS_LOG</div>
+    <table><thead><tr><th>Column</th><th>Type</th><th>Constraints</th></tr></thead><tbody>
+      <tr><td>LogID</td><td>INT</td><td>PK, AUTO_INCREMENT</td></tr>
+      <tr><td>MemberID</td><td>INT</td><td>FK -> MEMBER</td></tr>
+      <tr><td>ResourceID</td><td>INT</td><td>FK -> DIGITAL_RESOURCE</td></tr>
+      <tr><td>AccessDate</td><td>DATETIME</td><td>DEFAULT CURRENT_TIMESTAMP</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     08 — SQL COMMANDS (DDL & DML) WITH SAMPLE OUTPUTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">08</span> SQL Commands (DDL &amp; DML) with Sample Outputs</h1>
+
+  <h2>DDL - Database and Table Creation</h2>
+  <pre>CREATE DATABASE LibraryDBMS;
+USE LibraryDBMS;
+
+-- CATEGORY table
+CREATE TABLE CATEGORY (
+    CategoryID   INT PRIMARY KEY AUTO_INCREMENT,
+    CategoryName VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- BOOK table with FK references
+CREATE TABLE BOOK (
+    BookID      INT PRIMARY KEY,
+    ISBN        VARCHAR(20)  NOT NULL UNIQUE,
+    Title       VARCHAR(200) NOT NULL,
+    CategoryID  INT NOT NULL,
+    PublisherID INT NOT NULL,
+    CONSTRAINT fk_book_category  FOREIGN KEY (CategoryID)
+        REFERENCES CATEGORY(CategoryID) ON UPDATE CASCADE,
+    CONSTRAINT fk_book_publisher FOREIGN KEY (PublisherID)
+        REFERENCES PUBLISHER(PublisherID) ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- BOOK_AUTHOR junction table (M:N)
+CREATE TABLE BOOK_AUTHOR (
+    BookID   INT NOT NULL,
+    AuthorID INT NOT NULL,
+    PRIMARY KEY (BookID, AuthorID),
+    CONSTRAINT fk_ba_book   FOREIGN KEY (BookID)
+        REFERENCES BOOK(BookID)   ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_ba_author FOREIGN KEY (AuthorID)
+        REFERENCES AUTHOR(AuthorID) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+-- ISSUE table
+CREATE TABLE ISSUE (
+    IssueID   INT PRIMARY KEY AUTO_INCREMENT,
+    MemberID  INT  NOT NULL,
+    CopyID    INT  NOT NULL,
+    IssueDate DATE NOT NULL,
+    DueDate   DATE NOT NULL,
+    CONSTRAINT fk_issue_member FOREIGN KEY (MemberID)
+        REFERENCES MEMBER(MemberID) ON DELETE CASCADE,
+    CONSTRAINT fk_issue_copy   FOREIGN KEY (CopyID)
+        REFERENCES COPY(CopyID)   ON DELETE CASCADE
+) ENGINE=InnoDB;</pre>
+
+  <h2>DML - INSERT Samples</h2>
+  <pre>-- Insert categories
+INSERT INTO CATEGORY (CategoryID, CategoryName) VALUES
+(1,'DBMS'),(2,'OS'),(3,'Networking'),(4,'Programming'),
+(5,'DSA'),(6,'AI'),(7,'Cloud'),(8,'SE');
+
+-- Insert a book
+INSERT INTO BOOK (BookID, ISBN, Title, CategoryID, PublisherID) VALUES
+(201, '978-0073523323', 'Database Management System', 1, 1);
+
+-- Issue a book copy to a member
+INSERT INTO ISSUE (MemberID, CopyID, IssueDate, DueDate) VALUES
+(1, 1, '2025-09-01', '2025-09-15');</pre>
+
+  <p><strong>Sample Output - SHOW TABLES:</strong></p>
+  <div class="query-output">mysql> SHOW TABLES;
++------------------------+
+| Tables_in_LibraryDBMS  |
++------------------------+
+| AUTHOR                 |
+| BOOK                   |
+| BOOK_AUTHOR            |
+| CATEGORY               |
+| COPY                   |
+| DIGITAL_ACCESS_LOG     |
+| DIGITAL_RESOURCE       |
+| FINE                   |
+| ISSUE                  |
+| MEMBER                 |
+| PUBLISHER              |
+| RESERVATION            |
+| RETURN                 |
++------------------------+
+13 rows in set (0.01 sec)</div>
+
+  <h2>DML - DELETE Sample</h2>
+  <pre>-- Delete a book (cascades to COPY, BOOK_AUTHOR, ISSUE, FINE, RETURN)
+DELETE FROM BOOK WHERE BookID = 221;
+
+-- Record a book return
+INSERT INTO `RETURN` (IssueID, ReturnDate)
+VALUES (3, CURDATE());</pre>
+
+  <h2>Books View (deduplicating author names)</h2>
+  <pre>CREATE OR REPLACE VIEW Books AS
+SELECT
+    b.BookID AS Book_ID,  b.Title,
+    IFNULL(GROUP_CONCAT(DISTINCT a.Name SEPARATOR ', '), 'Unknown') AS Author,
+    c.CategoryName AS Category,
+    COUNT(DISTINCT CASE WHEN cp.Status = 'Available' THEN cp.CopyID END) AS Available_Copies
+FROM BOOK b
+JOIN CATEGORY c ON b.CategoryID = c.CategoryID
+LEFT JOIN BOOK_AUTHOR ba ON b.BookID = ba.BookID
+LEFT JOIN AUTHOR a ON ba.AuthorID = a.AuthorID
+LEFT JOIN COPY cp ON b.BookID = cp.BookID
+GROUP BY b.BookID, b.Title, c.CategoryName;</pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     09 — QUERIES WITH OUTPUTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">09</span> Queries with Outputs</h1>
+
+  <h2>Query 1 - Books Available on the Shelf</h2>
+  <pre>SELECT * FROM Books WHERE Available_Copies > 0;</pre>
+  <div class="query-output">+--------+---------------------------+------------------+-------------+------------------+
+| Book_ID| Title                     | Author           | Category    | Available_Copies |
++--------+---------------------------+------------------+-------------+------------------+
+|    201 | Database Management System| Korth            | DBMS        |                5 |
+|    202 | Operating Systems         | Galvin           | OS          |                4 |
+|    203 | Computer Networks         | Forouzan         | Networking  |                6 |
+|    204 | Java Programming          | Herbert Schildt  | Programming |                7 |
+|    205 | Python Basics             | John Zelle       | Programming |                8 |
+|    ... | ...                       | ...              | ...         |              ... |
++--------+---------------------------+------------------+-------------+------------------+
+19 rows in set (0.04 sec)</div>
+
+  <h2>Query 2 - Circulation Tracking</h2>
+  <pre>SELECT m.Member_Name, b.Title, i.Issue_Date, i.Return_Date
+FROM Issued_Books i
+JOIN Members m ON i.Member_ID = m.Member_ID
+JOIN Books b   ON i.Book_ID   = b.Book_ID;</pre>
+  <div class="query-output">+-----------------+---------------------------+------------+-------------+
+| Member_Name     | Title                     | Issue_Date | Return_Date |
++-----------------+---------------------------+------------+-------------+
+| Rohan Shikhar   | Database Management System| 2025-09-01 | NULL        |
+| Sarthak Sharma  | Operating Systems         | 2025-09-02 | 2025-09-18  |
+| Soumya Singh    | Artificial Intelligence   | 2025-09-03 | NULL        |
+| Shreshtha Gupta | Java Programming          | 2025-09-04 | 2025-09-19  |
+| Aman Verma      | Machine Learning          | 2025-09-05 | NULL        |
++-----------------+---------------------------+------------+-------------+
+10 rows in set (0.03 sec)</div>
+
+  <h2>Query 3 - Overdue Books</h2>
+  <pre>SELECT m.Member_Name, b.Title, i.Due_Date
+FROM Issued_Books i
+JOIN Members m ON i.Member_ID = m.Member_ID
+JOIN Books b   ON i.Book_ID   = b.Book_ID
+WHERE i.Return_Date IS NULL AND i.Due_Date &lt; CURDATE();</pre>
+  <div class="query-output">+-----------------+---------------------------+------------+
+| Member_Name     | Title                     | Due_Date   |
++-----------------+---------------------------+------------+
+| Rohan Shikhar   | Database Management System| 2025-09-15 |
+| Soumya Singh    | Artificial Intelligence   | 2025-09-17 |
+| Aman Verma      | Machine Learning          | 2025-09-19 |
+| Rahul Kumar     | Python Basics             | 2025-09-21 |
+| Arjun Mehta     | Data Mining               | 2025-09-23 |
+| Ananya Jain     | IoT Fundamentals          | 2025-09-24 |
++-----------------+---------------------------+------------+
+6 rows in set (0.02 sec)</div>
+
+  <h2>Query 4 - Demand Analysis (Most Issued Titles)</h2>
+  <pre>SELECT b.Title, COUNT(*) AS Times_Issued
+FROM Issued_Books i
+JOIN Books b ON i.Book_ID = b.Book_ID
+GROUP BY b.Book_ID, b.Title
+ORDER BY Times_Issued DESC;</pre>
+  <div class="query-output">+---------------------------+--------------+
+| Title                     | Times_Issued |
++---------------------------+--------------+
+| Database Management System|            1 |
+| Operating Systems         |            1 |
+| Artificial Intelligence   |            1 |
+| ...                       |          ... |
++---------------------------+--------------+
+10 rows in set (0.02 sec)</div>
+
+  <h2>Query 5 - Member Fine Summary</h2>
+  <pre>SELECT m.Member_Name, m.Member_Type,
+       COUNT(i.Issue_ID)            AS Total_Issued,
+       IFNULL(SUM(f.Fine_Amount),0) AS Total_Fine
+FROM Members m
+LEFT JOIN Issued_Books i ON m.Member_ID = i.Member_ID
+LEFT JOIN Fines f        ON i.Issue_ID  = f.Issue_ID
+GROUP BY m.Member_ID, m.Member_Name, m.Member_Type
+ORDER BY Total_Fine DESC;</pre>
+  <div class="query-output">+-----------------+-------------+--------------+------------+
+| Member_Name     | Member_Type | Total_Issued | Total_Fine |
++-----------------+-------------+--------------+------------+
+| Rohan Shikhar   | Student     |            1 |      50.00 |
+| Soumya Singh    | Student     |            1 |      25.00 |
+| Aman Verma      | Student     |            1 |      15.00 |
+| Rahul Kumar     | Student     |            1 |      10.00 |
+| Arjun Mehta     | Student     |            1 |      10.00 |
+| Sarthak Sharma  | Student     |            1 |       0.00 |
+| Shreshtha Gupta | Student     |            1 |       0.00 |
+| Priya Patel     | Student     |            1 |       0.00 |
+| Sneha Reddy     | Student     |            1 |       0.00 |
+| Ananya Jain     | Student     |            1 |       0.00 |
++-----------------+-------------+--------------+------------+
+10 rows in set (0.03 sec)</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     10 — UI DESIGN & SCREENSHOTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">10</span> UI Design &amp; Screenshots</h1>
+
+  <h2>Design Philosophy</h2>
+  <p>The UI follows a <strong>Monochrome Bento Grid</strong> design language: dark backgrounds on the login screen, clean white card panels in the dashboard, and high-contrast typography. No emojis are used - SVG icons and text-based status badges replace them. The design is role-aware; Admins see full CRUD controls while Students see a browse-and-borrow interface.</p>
+
+  <h2>Screens and Operations</h2>
+  <table>
+    <thead><tr><th>Screen</th><th>Description</th><th>Operations</th></tr></thead>
+    <tbody>
+      <tr><td>Login Page</td><td>Role selection (Admin / Student) with credentials</td><td>-</td></tr>
+      <tr><td>Dashboard</td><td>Stats: total books, copies, members, active loans, unpaid fines</td><td>View</td></tr>
+      <tr><td>Books</td><td>Full book catalogue with author, category, publisher, copy count</td><td>View, Insert, Delete</td></tr>
+      <tr><td>Members</td><td>Registered library members list</td><td>View, Insert, Delete</td></tr>
+      <tr><td>Issue / Return</td><td>Circulation table - issue a book, record a return</td><td>View, Insert</td></tr>
+      <tr><td>Fines</td><td>Outstanding fine records linked to issue IDs</td><td>View</td></tr>
+      <tr><td>Digital Resources</td><td>E-book and journal catalogue with access links</td><td>View</td></tr>
+      <tr><td>SQL Explorer</td><td>Run the 5 evaluated queries directly from the portal</td><td>View</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Frontend Technology</h2>
+  <ul>
+    <li><strong>HTML5</strong> - semantic markup, single-page layout with dynamic section switching via JavaScript</li>
+    <li><strong>Vanilla CSS</strong> - CSS Grid, CSS custom properties, keyframe animations, glassmorphism effects</li>
+    <li><strong>Vanilla JavaScript</strong> - Fetch API for REST calls, DOM manipulation, role-based conditional rendering</li>
+    <li><strong>Google Fonts</strong> - Inter (body text), Space Grotesk (headings), JetBrains Mono (code and badges)</li>
+  </ul>
+
+  <div class="callout callout-info"><strong>Note:</strong> Live screenshots are captured during the Presentation-III demo and uploaded to the <code>Presentation-III/</code> folder on GitHub.</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     11 — IMPLEMENTATION DETAILS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">11</span> Implementation Details</h1>
+
+  <h2>Technology Stack</h2>
+  <table>
+    <thead><tr><th>Layer</th><th>Technology</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td>Database</td><td>MySQL 9.7 (InnoDB)</td><td>13-table 3NF schema, FK constraints, ENUM fields, views</td></tr>
+      <tr><td>DB Connector</td><td>PyMySQL 1.x</td><td>Connection management, parameterized queries</td></tr>
+      <tr><td>API Server</td><td>Flask 3.x (Python 3.14)</td><td>REST routing, JSON serialization, CORS headers</td></tr>
+      <tr><td>Frontend</td><td>HTML5 + CSS + JS</td><td>Single-page app, Fetch API, dynamic DOM rendering</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Database Connectivity</h2>
+  <pre>import pymysql
+from config import Config
+
+def get_connection():
+    return pymysql.connect(
+        host        = Config.MYSQL_HOST,
+        port        = Config.MYSQL_PORT,
+        user        = Config.MYSQL_USER,
+        password    = Config.MYSQL_PASSWORD,
+        database    = Config.MYSQL_DB,
+        cursorclass = pymysql.cursors.DictCursor,
+        autocommit  = True
+    )
+
+def query_db(sql, args=(), one=False):
+    conn = get_connection()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(sql, args)
+            return cur.fetchone() if one else cur.fetchall()
+    finally:
+        conn.close()</pre>
+
+  <h2>REST API Endpoint Map</h2>
+  <table>
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td>/api/status</td><td>DB connection status and dashboard stats</td></tr>
+      <tr><td>GET / POST / DELETE</td><td>/api/books[/&lt;id&gt;]</td><td>Fetch all / insert / delete books</td></tr>
+      <tr><td>GET / POST / DELETE</td><td>/api/members[/&lt;id&gt;]</td><td>Fetch all / register / remove members</td></tr>
+      <tr><td>GET / POST</td><td>/api/issues</td><td>Fetch all issues / issue a copy</td></tr>
+      <tr><td>POST</td><td>/api/returns</td><td>Record a book return</td></tr>
+      <tr><td>GET</td><td>/api/digital-resources</td><td>Fetch digital resource catalogue</td></tr>
+      <tr><td>GET</td><td>/api/query/&lt;n&gt;</td><td>Run evaluated query 1-5, return JSON</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Issue Book Endpoint (key snippet)</h2>
+  <pre>@app.route('/api/issues', methods=['POST'])
+def api_issue_book():
+    data      = request.json or {}
+    member_id = data.get('member_id')
+    copy_id   = data.get('copy_id')
+    due_date  = data.get('due_date')
+
+    # Guard: verify copy is Available
+    copy = query_db(
+        "SELECT Status FROM COPY WHERE CopyID=%s", (copy_id,), one=True)
+    if not copy or copy['Status'] != 'Available':
+        return jsonify({"success": False, "error": "Copy not available"}), 400
+
+    issue_date = datetime.date.today().isoformat()
+    modify_db(
+        "INSERT INTO ISSUE (MemberID,CopyID,IssueDate,DueDate) VALUES (%s,%s,%s,%s)",
+        (member_id, copy_id, issue_date, due_date)
+    )
+    modify_db("UPDATE COPY SET Status='Issued' WHERE CopyID=%s", (copy_id,))
+    return jsonify({"success": True})</pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     12 — TESTING
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">12</span> Testing</h1>
+
+  <table>
+    <thead><tr><th>#</th><th>Test Case</th><th>Input / Action</th><th>Expected Result</th><th>Actual Result</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Insert new book</td><td>POST /api/books (valid data)</td><td>201 created; visible in list</td><td>Inserted and reflected in UI</td><td class="test-pass">PASS</td></tr>
+      <tr><td>2</td><td>Delete existing book</td><td>DELETE /api/books/221</td><td>200 OK; book removed</td><td>Deleted; copies cascade-removed</td><td class="test-pass">PASS</td></tr>
+      <tr><td>3</td><td>Delete non-existent book</td><td>DELETE /api/books/9999</td><td>404 Not Found</td><td>404 returned with error</td><td class="test-pass">PASS</td></tr>
+      <tr><td>4</td><td>Issue Available copy</td><td>POST /api/issues (CopyID=2)</td><td>Issue created; status Issued</td><td>ISSUE row inserted; status updated</td><td class="test-pass">PASS</td></tr>
+      <tr><td>5</td><td>Issue already-Issued copy</td><td>POST /api/issues (CopyID=1)</td><td>400 - "Copy not available"</td><td>Error returned; UI alert shown</td><td class="test-pass">PASS</td></tr>
+      <tr><td>6</td><td>Record a return</td><td>POST /api/returns (IssueID=3)</td><td>RETURN row; copy Available</td><td>Return recorded; status reverted</td><td class="test-pass">PASS</td></tr>
+      <tr><td>7</td><td>Insert duplicate ISBN</td><td>POST /api/books (existing ISBN)</td><td>UNIQUE error 400</td><td>Error returned; no duplicate</td><td class="test-pass">PASS</td></tr>
+      <tr><td>8</td><td>Author deduplication</td><td>GET /api/books</td><td>Author once per book</td><td>GROUP_CONCAT(DISTINCT) works</td><td class="test-pass">PASS</td></tr>
+      <tr><td>9</td><td>Dashboard stats</td><td>GET /api/status after insert</td><td>Count increments</td><td>Count correct</td><td class="test-pass">PASS</td></tr>
+      <tr><td>10</td><td>Query 5 (fine summary)</td><td>GET /api/query/5</td><td>Rohan at top with Rs.50</td><td>Output matched exactly</td><td class="test-pass">PASS</td></tr>
+      <tr><td>11</td><td>Role-based UI - Admin</td><td>Login as Admin</td><td>Insert/Delete visible</td><td>Admin controls rendered</td><td class="test-pass">PASS</td></tr>
+      <tr><td>12</td><td>Role-based UI - Student</td><td>Login as Student</td><td>Only Borrow shown</td><td>Student view correct</td><td class="test-pass">PASS</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-success">All 12 test cases passed. No critical bugs found during testing.</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     13 — CONCLUSION & FUTURE ENHANCEMENTS
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">13</span> Conclusion &amp; Future Enhancements</h1>
+
+  <h2>Conclusion</h2>
+  <p>This project successfully demonstrates a complete, end-to-end relational database application. The <strong>Library Circulation and Digital Resource Management System</strong> was designed from first principles using Entity-Relationship modelling, normalized to 3NF across 13 tables, implemented in MySQL 9.7 with InnoDB foreign-key enforcement, and exposed via a Flask REST API connected to a responsive browser-based UI.</p>
+  <p>The system supports all required CRUD operations (Insert, Delete, View) and executes five analytical SQL queries covering the full operational scope of a university library. The role-based interface cleanly separates Admin and Student workflows.</p>
+
+  <h2>Future Enhancements</h2>
+  <table>
+    <thead><tr><th>Enhancement</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Barcode / RFID Integration</td><td>Scan physical accession barcodes for faster issue/return</td></tr>
+      <tr><td>Email / SMS Notifications</td><td>Automated reminders for due dates and fines</td></tr>
+      <tr><td>Online Payment Gateway</td><td>Pay fines directly through the portal</td></tr>
+      <tr><td>Multi-Branch Support</td><td>Branch-specific copy allocation</td></tr>
+      <tr><td>Advanced Search</td><td>Full-text search on title, author, ISBN with filters</td></tr>
+      <tr><td>Analytics Dashboard</td><td>Charts for borrowing trends and peak usage</td></tr>
+      <tr><td>Mobile Application</td><td>React Native / Flutter for student self-service</td></tr>
+      <tr><td>Cloud Deployment</td><td>Deploy on AWS/GCP with managed MySQL (RDS/Cloud SQL)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     14 — REFERENCES
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">14</span> References</h1>
+  <ol style="line-height:2.2;">
+    <li>Silberschatz, A., Korth, H. F., &amp; Sudarshan, S. (2019). <em>Database System Concepts</em> (7th ed.). McGraw-Hill.</li>
+    <li>Ramakrishnan, R., &amp; Gehrke, J. (2002). <em>Database Management Systems</em> (3rd ed.). McGraw-Hill.</li>
+    <li>MySQL 9.7 Reference Manual. Oracle Corporation. https://dev.mysql.com/doc/refman/9.0/en/</li>
+    <li>Flask Documentation. Pallets Projects. https://flask.palletsprojects.com/</li>
+    <li>PyMySQL Documentation. https://pymysql.readthedocs.io/en/latest/</li>
+    <li>MDN Web Docs - HTML, CSS, JavaScript Reference. Mozilla Foundation. https://developer.mozilla.org/</li>
+    <li>Google Fonts - Inter, Space Grotesk, JetBrains Mono. https://fonts.google.com/</li>
+  </ol>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     15 — APPENDIX: GITHUB REPOSITORY LINK
+═══════════════════════════════════════════════════════════════ -->
+<div class="page-break">
+  <h1 class="section-title"><span class="num">15</span> Appendix: GitHub Repository Link</h1>
+  <p>The complete source code, SQL scripts, ER diagram, presentation slides, and this project report are available in the public GitHub repository below.</p>
+
+  <table>
+    <thead><tr><th>Item</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Repository Name</td><td>DBMS-PROJECT</td></tr>
+      <tr><td>Student</td><td>Rohan Shikhar (25WU0101112)</td></tr>
+      <tr><td>Repository URL</td><td><strong>https://github.com/rohandev0185/DBMS-PROJECT</strong></td></tr>
+      <tr><td>Folder: Presentation-I</td><td>Problem Description slides / PDF</td></tr>
+      <tr><td>Folder: Presentation-II</td><td>Slides, ER diagram, library_db.sql, query solution</td></tr>
+      <tr><td>Folder: Presentation-III</td><td>Flask app source code, templates, static assets, screenshots</td></tr>
+      <tr><td>Folder: Project-Report</td><td>This report (Project_Report.pdf)</td></tr>
+      <tr><td>README.md</td><td>Project overview, roll number, description, setup instructions</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Repository Structure</h2>
+  <pre>DBMS-PROJECT/
++-- README.md
++-- Presentation-I/
+|   +-- Problem_Description.html
++-- Presentation-II/
+|   +-- library_db.sql
+|   +-- er_diagram.png
++-- Presentation-III/
+|   +-- app.py
+|   +-- config.py
+|   +-- db.py
+|   +-- templates/index.html
+|   +-- static/
+|       +-- css/style.css
+|       +-- js/app.js
++-- Project-Report/
+    +-- Project_Report.pdf</pre>
+
+  <div class="report-footer">
+    Library Circulation &amp; Digital Resource Management System | Rohan Shikhar (25WU0101112) | Woxsen University | 2025-2026
+  </div>
+</div>
+
+</body>
+</html>

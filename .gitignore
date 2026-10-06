@@ -1,0 +1,10 @@
+# Ignore non-DBMS files
+Skillit_*.pdf
+Skillit_Conceptual_Project_Report full.pdf
+Claude Setup.exe
+
+# System files
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
